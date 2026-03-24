@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tìm Kiếm - CÔNG TY BK</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="landing-page">
+
+    <header class="header">
+      <div class="container">
+        <a href="index.html" class="logo" style="text-decoration:none;">📦 CÔNG TY BK</a>
+        <nav class="nav">
+          <a href="gioi-thieu.html" class="nav-link">Giới Thiệu</a>
+          <a href="tim-kiem.html" class="nav-link active-link">Tìm Kiếm</a>
+          <a href="san-pham.html" class="nav-link">Sản Phẩm</a>
+          <a href="lien-he.html" class="nav-link">Liên Hệ</a>
+          <div class="nav-divider"></div>
+          <a href="gio-hang.html" class="nav-cart">🛒<span class="cart-count hidden" id="cartCount">0</span></a>
+          <a href="login.html" class="btn btn-outline">Đăng Nhập</a>
+          <a href="register.html" class="btn btn-primary">Đăng Ký</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="page-banner">
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">Trang chủ</a> / Tìm Kiếm</div>
+        <h2>Tìm Kiếm Sản Phẩm</h2>
+        <p>Tìm kiếm nhanh theo tên, danh mục, khoảng giá</p>
+      </div>
+    </div>
+
+    <!-- TÌM KIẾM NÂNG CAO -->
+    <section style="padding:48px 20px; background:white;">
+      <div class="container">
+
+        <!-- Thanh tìm kiếm chính -->
+        <div class="adv-search-box">
+          <div class="search-input-wrap" style="margin-bottom:0;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="mainSearch" placeholder="Nhập tên sản phẩm..." oninput="doSearch()" />
+          </div>
+          <button class="btn btn-primary" onclick="doSearch()" style="padding:16px 32px;font-size:16px;">Tìm Kiếm</button>
+        </div>
+
+        <!-- Bộ lọc nâng cao -->
+        <div class="adv-filters">
+          <div class="filter-group">
+            <label>Danh mục</label>
+            <select id="filterCat" onchange="doSearch()">
+              <option value="">Tất cả danh mục</option>
+              <option value="giay">Giấy Khổ Lớn</option>
+              <option value="loi">Lõi Ống</option>
+              <option value="vai">Vải Vụn</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Đơn vị tính</label>
+            <select id="filterUnit" onchange="doSearch()">
+              <option value="">Tất cả</option>
+              <option value="ream">Ream</option>
+              <option value="cuon">Cuộn</option>
+              <option value="kg">Kg / Tấn</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Sắp xếp</label>
+            <select id="filterSort" onchange="doSearch()">
+              <option value="default">Mặc định</option>
+              <option value="name-az">Tên A → Z</option>
+              <option value="name-za">Tên Z → A</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary" onclick="resetFilters()">↺ Đặt lại</button>
+        </div>
+
+        <!-- Kết quả -->
+        <div class="search-result-info" id="resultInfo"></div>
+
+        <div class="product-showcase" id="searchResults"></div>
+
+        <div id="noResult" class="no-result" style="display:none;">
+          <span>😕</span>
+          <p>Không tìm thấy sản phẩm phù hợp. Thử từ khóa khác nhé!</p>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2024 CÔNG TY BK. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const allProducts = [
+      { name: 'Giấy In Khổ Lớn A0', cat: 'giay', unit: 'ream', icon: '📄', bg: 'blue-bg',   desc: 'Giấy in khổ A0 (841×1189mm), 80gsm, dùng cho máy in khổ lớn, bản vẽ kỹ thuật' },
+      { name: 'Giấy Cuộn Offset',    cat: 'giay', unit: 'cuon', icon: '🗞️', bg: 'green-bg',  desc: 'Giấy cuộn offset khổ rộng 60–120cm, định lượng 60–120gsm' },
+      { name: 'Giấy Bìa Cứng Khổ Lớn', cat: 'giay', unit: 'kg', icon: '📋', bg: 'orange-bg', desc: 'Giấy bìa cứng 300gsm, khổ 70×100cm, dùng cho đóng sách, bao bì hộp carton' },
+      { name: 'Giấy Ảnh Cuộn',       cat: 'giay', unit: 'cuon', icon: '🖼️', bg: 'purple-bg', desc: 'Giấy ảnh bóng/mờ dạng cuộn, khổ 24–60 inch, 200gsm' },
+      { name: 'Lõi Ống Giấy 3 Inch', cat: 'loi',  unit: 'cuon', icon: '🧻', bg: 'yellow-bg', desc: 'Lõi ống giấy đường kính 3 inch (76mm), dài 30–150cm' },
+      { name: 'Lõi Ống Giấy 6 Inch', cat: 'loi',  unit: 'cuon', icon: '🎯', bg: 'red-bg',    desc: 'Lõi ống giấy đường kính 6 inch (152mm), thành dày 5–10mm' },
+      { name: 'Vải Vụn Cotton',       cat: 'vai',  unit: 'kg',   icon: '🧵', bg: 'teal-bg',   desc: 'Vải vụn cotton tổng hợp, đóng gói theo kg, dùng cho lau chùi công nghiệp' },
+      { name: 'Vải Vụn Tổng Hợp',    cat: 'vai',  unit: 'kg',   icon: '🪡', bg: 'indigo-bg', desc: 'Vải vụn hỗn hợp nhiều chất liệu, phân loại theo màu sắc' },
+    ];
+
+    const catLabel = { giay: 'Giấy Khổ Lớn', loi: 'Lõi Ống', vai: 'Vải Vụn' };
+    const unitLabel = { ream: 'Ream', cuon: 'Cuộn', kg: 'Kg / Tấn' };
+
+    function doSearch() {
+      const kw   = document.getElementById('mainSearch').value.toLowerCase().trim();
+      const cat  = document.getElementById('filterCat').value;
+      const unit = document.getElementById('filterUnit').value;
+      const sort = document.getElementById('filterSort').value;
+
+      let results = allProducts.filter(p => {
+        const matchKw   = !kw   || p.name.toLowerCase().includes(kw);
+        const matchCat  = !cat  || p.cat  === cat;
+        const matchUnit = !unit || p.unit === unit;
+        return matchKw && matchCat && matchUnit;
+      });
+
+      if (sort === 'name-az') results.sort((a,b) => a.name.localeCompare(b.name));
+      if (sort === 'name-za') results.sort((a,b) => b.name.localeCompare(a.name));
+
+      const grid = document.getElementById('searchResults');
+      const noRes = document.getElementById('noResult');
+      const info  = document.getElementById('resultInfo');
+
+      info.textContent = `Tìm thấy ${results.length} sản phẩm`;
+
+      if (results.length === 0) {
+        grid.innerHTML = '';
+        noRes.style.display = 'flex';
+        return;
+      }
+
+      noRes.style.display = 'none';
+      grid.innerHTML = results.map(p => `
+        <div class="showcase-card">
+          <div class="showcase-img ${p.bg}">${p.icon}</div>
+          <div class="showcase-info">
+            <span class="showcase-cat">${catLabel[p.cat]}</span>
+            <h4>${p.name}</h4>
+            <p>${p.desc}</p>
+            <div class="showcase-meta">
+              <span class="showcase-unit">Đơn vị: ${unitLabel[p.unit]}</span>
+              <span class="showcase-price">Liên hệ báo giá</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function resetFilters() {
+      document.getElementById('mainSearch').value = '';
+      document.getElementById('filterCat').value  = '';
+      document.getElementById('filterUnit').value = '';
+      document.getElementById('filterSort').value = 'default';
+      doSearch();
+    }
+
+    // Hiển thị tất cả khi load
+    doSearch();
+  </script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Quản Lý Kho Giấy</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="landing-page">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="container">
+        <h1 class="logo">📦 CÔNG TY BK</h1>
+        <nav class="nav">
+          <a href="gioi-thieu.html" class="nav-link">Giới Thiệu</a>
+          <a href="tim-kiem.html" class="nav-link">Tìm Kiếm</a>
+          <a href="san-pham.html" class="nav-link">Sản Phẩm</a>
+          <a href="lien-he.html" class="nav-link">Liên Hệ</a>
+          <div class="nav-divider"></div>
+          <a href="gio-hang.html" class="nav-cart">
+            🛒
+            <span class="cart-count" id="cartCount">0</span>
+          </a>
+          <a href="login.html" class="btn btn-outline">Đăng Nhập</a>
+          <a href="register.html" class="btn btn-primary">Đăng Ký</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main class="hero">
+      <div class="container">
+        <div class="hero-badge">🏭 Nhà cung cấp giấy công nghiệp uy tín</div>
+        <h2>Hệ Thống Quản Lý<br>Kho Giấy Chuyên Nghiệp</h2>
+        <p>Cung cấp giấy khổ lớn, lõi ống, vải vụn chất lượng cao<br>cho doanh nghiệp in ấn, bao bì và sản xuất</p>
+        <div class="cta-buttons">
+          <a href="customer/index.html" class="btn btn-large btn-primary">🛒 Mua Hàng Ngay</a>
+          <a href="admin/index.html" class="btn btn-large btn-outline">⚙️ Trang Quản Trị</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><span class="stat-num">500+</span><span class="stat-text">Khách hàng</span></div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat"><span class="stat-num">50+</span><span class="stat-text">Loại sản phẩm</span></div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat"><span class="stat-num">10+</span><span class="stat-text">Năm kinh nghiệm</span></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- GIỚI THIỆU -->
+    <section class="about-section" id="gioi-thieu">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-text">
+            <div class="section-tag">Về Chúng Tôi</div>
+            <h3>Đối Tác Tin Cậy Trong Ngành Giấy</h3>
+            <p>Chúng tôi chuyên cung cấp các sản phẩm giấy công nghiệp chất lượng cao cho các doanh nghiệp in ấn, bao bì, đóng gói và sản xuất trên toàn quốc.</p>
+            <p>Với hệ thống kho bãi hiện đại và đội ngũ chuyên nghiệp, chúng tôi cam kết giao hàng đúng hạn, đúng số lượng và đảm bảo chất lượng từng lô hàng.</p>
+            <div class="about-features">
+              <div class="about-feature">✅ Hàng hóa đạt tiêu chuẩn chất lượng</div>
+              <div class="about-feature">✅ Giao hàng toàn quốc nhanh chóng</div>
+              <div class="about-feature">✅ Hỗ trợ xuất hóa đơn VAT</div>
+              <div class="about-feature">✅ Thanh toán linh hoạt (tiền mặt / chuyển khoản)</div>
+            </div>
+          </div>
+          <div class="about-image">
+            <div class="about-img-placeholder">
+              <div class="about-img-icon">🏭</div>
+              <p>Kho hàng hiện đại</p>
+              <p>Diện tích 5.000 m²</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TÌM KIẾM SẢN PHẨM -->
+    <section class="search-section" id="tim-kiem">
+      <div class="container">
+        <div class="section-tag center">Tìm Kiếm</div>
+        <h3 class="section-title">Tìm Sản Phẩm Phù Hợp</h3>
+        <p class="section-subtitle">Nhập tên sản phẩm hoặc chọn danh mục để tìm kiếm nhanh</p>
+        <div class="search-box">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Tìm kiếm: giấy in, lõi ống, vải vụn..."
+              oninput="filterProducts()"
+            />
+          </div>
+          <div class="category-tabs">
+            <button class="cat-tab active" onclick="setCategory('all', this)">Tất cả</button>
+            <button class="cat-tab" onclick="setCategory('giay', this)">📄 Giấy Khổ Lớn</button>
+            <button class="cat-tab" onclick="setCategory('loi', this)">🧻 Lõi Ống</button>
+            <button class="cat-tab" onclick="setCategory('vai', this)">🧵 Vải Vụn</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SẢN PHẨM NỔI BẬT -->
+    <section class="products-section" id="san-pham">
+      <div class="container">
+        <div class="section-tag center">Sản Phẩm</div>
+        <h3 class="section-title">Sản Phẩm Nổi Bật</h3>
+        <p class="section-subtitle">Các sản phẩm được đặt hàng nhiều nhất</p>
+
+        <div class="product-showcase" id="productGrid">
+
+          <!-- Giấy khổ lớn -->
+          <div class="showcase-card" data-category="giay" data-name="giấy in khổ lớn a0">
+            <div class="showcase-img blue-bg">📄</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy In Khổ Lớn A0</h4>
+              <p>Giấy in khổ A0 (841×1189mm), định lượng 80gsm, dùng cho máy in khổ lớn, bản vẽ kỹ thuật</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: ream</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-category="giay" data-name="giấy cuộn offset">
+            <div class="showcase-img green-bg">🗞️</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Cuộn Offset</h4>
+              <p>Giấy cuộn offset dùng cho máy in offset, khổ rộng 60–120cm, định lượng 60–120gsm</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-category="giay" data-name="giấy bìa cứng khổ lớn">
+            <div class="showcase-img orange-bg">📋</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Bìa Cứng Khổ Lớn</h4>
+              <p>Giấy bìa cứng 300gsm, khổ 70×100cm, dùng cho đóng sách, bao bì hộp carton cao cấp</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-category="giay" data-name="giấy ảnh cuộn">
+            <div class="showcase-img purple-bg">🖼️</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Ảnh Cuộn</h4>
+              <p>Giấy ảnh bóng/mờ dạng cuộn, khổ 24–60 inch, 200gsm, dùng cho máy in ảnh khổ lớn</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lõi ống -->
+          <div class="showcase-card" data-category="loi" data-name="lõi ống giấy 3 inch">
+            <div class="showcase-img yellow-bg">🧻</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Lõi Ống</span>
+              <h4>Lõi Ống Giấy 3 Inch</h4>
+              <p>Lõi ống giấy đường kính 3 inch (76mm), dài 30–150cm, dùng để cuộn giấy, vải, màng nhựa</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-category="loi" data-name="lõi ống giấy 6 inch">
+            <div class="showcase-img red-bg">🎯</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Lõi Ống</span>
+              <h4>Lõi Ống Giấy 6 Inch</h4>
+              <p>Lõi ống giấy đường kính 6 inch (152mm), thành dày 5–10mm, chịu tải trọng cao</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vải vụn -->
+          <div class="showcase-card" data-category="vai" data-name="vải vụn cotton">
+            <div class="showcase-img teal-bg">🧵</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Vải Vụn</span>
+              <h4>Vải Vụn Cotton</h4>
+              <p>Vải vụn cotton tổng hợp, đóng gói theo kg, dùng cho lau chùi công nghiệp, tái chế sợi</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-category="vai" data-name="vải vụn tổng hợp">
+            <div class="showcase-img indigo-bg">🪡</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Vải Vụn</span>
+              <h4>Vải Vụn Tổng Hợp</h4>
+              <p>Vải vụn hỗn hợp nhiều chất liệu, phân loại theo màu sắc, phù hợp tái chế và sản xuất</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="noResult" class="no-result" style="display:none;">
+          <span>😕</span>
+          <p>Không tìm thấy sản phẩm phù hợp</p>
+        </div>
+
+        <div class="products-cta">
+          <a href="customer/index.html" class="btn btn-primary btn-large">Xem Tất Cả Sản Phẩm →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TÍNH NĂNG HỆ THỐNG -->
+    <section class="features">
+      <div class="container">
+        <div class="section-tag center">Hệ Thống</div>
+        <h3 class="section-title">Tính Năng Nổi Bật</h3>
+        <p class="section-subtitle">Giải pháp quản lý toàn diện cho doanh nghiệp</p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h4>Quản Lý Tồn Kho</h4>
+            <p>Theo dõi tồn kho thời gian thực, cảnh báo hàng sắp hết tự động</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">📦</div>
+            <h4>Nhập Xuất Kho</h4>
+            <p>Lập phiếu nhập xuất nhanh chóng, kiểm kê định kỳ chính xác</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🛒</div>
+            <h4>Bán Hàng Online</h4>
+            <p>Khách hàng đặt hàng dễ dàng, theo dõi đơn hàng minh bạch</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">📈</div>
+            <h4>Báo Cáo Thống Kê</h4>
+            <p>Doanh thu, chi phí, lợi nhuận hiển thị trực quan bằng biểu đồ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIÊN HỆ -->
+    <section class="contact-section" id="lien-he">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <div class="section-tag">Liên Hệ</div>
+            <h3>Cần Tư Vấn Báo Giá?</h3>
+            <p>Liên hệ với chúng tôi để được tư vấn sản phẩm và nhận báo giá tốt nhất</p>
+            <div class="contact-items">
+              <div class="contact-item">📞 <span>0901 234 567</span></div>
+              <div class="contact-item">📧 <span>contact@khogiay.vn</span></div>
+              <div class="contact-item">📍 <span>123 Đường Công Nghiệp, TP. HCM</span></div>
+              <div class="contact-item">🕐 <span>Thứ 2 – Thứ 7: 7:30 – 17:30</span></div>
+            </div>
+          </div>
+          <div class="contact-cta">
+            <div class="cta-card">
+              <h4>Đặt Hàng Ngay</h4>
+              <p>Đăng ký tài khoản để đặt hàng online và theo dõi đơn hàng</p>
+              <a href="register.html" class="btn btn-primary btn-block" style="margin-bottom:12px;">Đăng Ký Miễn Phí</a>
+              <a href="login.html" class="btn btn-outline btn-block">Đăng Nhập</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <h4>📦 CÔNG TY BK</h4>
+            <p>Nhà cung cấp giấy công nghiệp uy tín hàng đầu Việt Nam</p>
+          </div>
+          <div>
+            <h4>Sản Phẩm</h4>
+            <ul>
+              <li>Giấy Khổ Lớn</li>
+              <li>Giấy Cuộn Offset</li>
+              <li>Lõi Ống Giấy</li>
+              <li>Vải Vụn</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Hỗ Trợ</h4>
+            <ul>
+              <li><a href="login.html">Đăng Nhập</a></li>
+              <li><a href="register.html">Đăng Ký</a></li>
+              <li><a href="customer/index.html">Mua Hàng</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 CÔNG TY BK. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    let currentCategory = 'all';
+
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      filterProducts();
+    }
+
+    function filterProducts() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.showcase-card');
+      let visible = 0;
+
+      cards.forEach(card => {
+        const name = card.dataset.name || '';
+        const cat  = card.dataset.category || '';
+        const matchCat  = currentCategory === 'all' || cat === currentCategory;
+        const matchText = !keyword || name.includes(keyword);
+
+        if (matchCat && matchText) {
+          card.style.display = '';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('noResult').style.display = visible === 0 ? 'flex' : 'none';
+    }
+  </script>
+</body>
+</html>

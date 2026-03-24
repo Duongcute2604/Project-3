@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ Hàng - CÔNG TY BK</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="landing-page">
+
+    <header class="header">
+      <div class="container">
+        <a href="index.html" class="logo" style="text-decoration:none;">📦 CÔNG TY BK</a>
+        <nav class="nav">
+          <a href="gioi-thieu.html" class="nav-link">Giới Thiệu</a>
+          <a href="tim-kiem.html" class="nav-link">Tìm Kiếm</a>
+          <a href="san-pham.html" class="nav-link">Sản Phẩm</a>
+          <a href="lien-he.html" class="nav-link">Liên Hệ</a>
+          <div class="nav-divider"></div>
+          <a href="gio-hang.html" class="nav-cart active-link">🛒<span class="cart-count hidden" id="cartCount">0</span></a>
+          <a href="login.html" class="btn btn-outline">Đăng Nhập</a>
+          <a href="register.html" class="btn btn-primary">Đăng Ký</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="page-banner">
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">Trang chủ</a> / Giỏ Hàng</div>
+        <h2>🛒 Giỏ Hàng</h2>
+        <p>Xem lại sản phẩm trước khi đặt hàng</p>
+      </div>
+    </div>
+
+    <section style="padding:48px 20px; background:white;">
+      <div class="container">
+        <div id="cartEmpty" style="display:none;" class="no-result">
+          <span>🛒</span>
+          <p>Giỏ hàng trống. <a href="san-pham.html">Xem sản phẩm ngay</a></p>
+        </div>
+
+        <div id="cartContent">
+          <div class="cart-table-wrap">
+            <table id="cartTable">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Số lượng</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="cartBody"></tbody>
+            </table>
+          </div>
+
+          <div class="cart-actions">
+            <button class="btn btn-secondary" onclick="clearCart()">🗑️ Xóa tất cả</button>
+            <div style="display:flex;gap:12px;">
+              <a href="san-pham.html" class="btn btn-outline">← Tiếp tục mua</a>
+              <a href="lien-he.html" class="btn btn-primary">📨 Gửi yêu cầu báo giá</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2024 CÔNG TY BK. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('bk_cart') || '[]');
+      const body = document.getElementById('cartBody');
+      const el   = document.getElementById('cartCount');
+      const total = cart.reduce((s, i) => s + i.qty, 0);
+
+      el.textContent = total;
+      el.classList.toggle('hidden', total === 0);
+
+      if (cart.length === 0) {
+        document.getElementById('cartEmpty').style.display = 'flex';
+        document.getElementById('cartContent').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('cartEmpty').style.display = 'none';
+      document.getElementById('cartContent').style.display = 'block';
+
+      body.innerHTML = cart.map((item, idx) => `
+        <tr>
+          <td><strong>${item.name}</strong></td>
+          <td>
+            <div class="quantity-control">
+              <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+              <span class="qty-value">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="removeItem(${idx})">🗑️ Xóa</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function changeQty(idx, delta) {
+      const cart = JSON.parse(localStorage.getItem('bk_cart') || '[]');
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      localStorage.setItem('bk_cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeItem(idx) {
+      const cart = JSON.parse(localStorage.getItem('bk_cart') || '[]');
+      cart.splice(idx, 1);
+      localStorage.setItem('bk_cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    function clearCart() {
+      if (confirm('Xóa toàn bộ giỏ hàng?')) {
+        localStorage.removeItem('bk_cart');
+        loadCart();
+      }
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>

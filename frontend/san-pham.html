@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sản Phẩm - CÔNG TY BK</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="landing-page">
+
+    <header class="header">
+      <div class="container">
+        <a href="index.html" class="logo" style="text-decoration:none;">📦 CÔNG TY BK</a>
+        <nav class="nav">
+          <a href="gioi-thieu.html" class="nav-link">Giới Thiệu</a>
+          <a href="tim-kiem.html" class="nav-link">Tìm Kiếm</a>
+          <a href="san-pham.html" class="nav-link active-link">Sản Phẩm</a>
+          <a href="lien-he.html" class="nav-link">Liên Hệ</a>
+          <div class="nav-divider"></div>
+          <a href="gio-hang.html" class="nav-cart">🛒<span class="cart-count hidden" id="cartCount">0</span></a>
+          <a href="login.html" class="btn btn-outline">Đăng Nhập</a>
+          <a href="register.html" class="btn btn-primary">Đăng Ký</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="page-banner">
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">Trang chủ</a> / Sản Phẩm</div>
+        <h2>Danh Mục Sản Phẩm</h2>
+        <p>Giấy khổ lớn, lõi ống, vải vụn chất lượng cao</p>
+      </div>
+    </div>
+
+    <section style="padding:48px 20px; background:white;">
+      <div class="container">
+
+        <!-- Tab danh mục -->
+        <div class="product-tabs">
+          <button class="prod-tab active" onclick="showCat('all', this)">🗂️ Tất Cả</button>
+          <button class="prod-tab" onclick="showCat('giay', this)">📄 Giấy Khổ Lớn</button>
+          <button class="prod-tab" onclick="showCat('loi', this)">🧻 Lõi Ống</button>
+          <button class="prod-tab" onclick="showCat('vai', this)">🧵 Vải Vụn</button>
+        </div>
+
+        <!-- Grid sản phẩm -->
+        <div class="product-showcase" id="productGrid">
+
+          <div class="showcase-card" data-cat="giay">
+            <div class="showcase-img blue-bg">📄</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy In Khổ Lớn A0</h4>
+              <p>Giấy in khổ A0 (841×1189mm), định lượng 80gsm, dùng cho máy in khổ lớn, bản vẽ kỹ thuật</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: ream</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Giấy In Khổ Lớn A0')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="giay">
+            <div class="showcase-img green-bg">🗞️</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Cuộn Offset</h4>
+              <p>Giấy cuộn offset khổ rộng 60–120cm, định lượng 60–120gsm, dùng cho máy in offset</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Giấy Cuộn Offset')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="giay">
+            <div class="showcase-img orange-bg">📋</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Bìa Cứng Khổ Lớn</h4>
+              <p>Giấy bìa cứng 300gsm, khổ 70×100cm, dùng cho đóng sách, bao bì hộp carton cao cấp</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Giấy Bìa Cứng Khổ Lớn')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="giay">
+            <div class="showcase-img purple-bg">🖼️</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Giấy Khổ Lớn</span>
+              <h4>Giấy Ảnh Cuộn</h4>
+              <p>Giấy ảnh bóng/mờ dạng cuộn, khổ 24–60 inch, 200gsm, dùng cho máy in ảnh khổ lớn</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Giấy Ảnh Cuộn')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="loi">
+            <div class="showcase-img yellow-bg">🧻</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Lõi Ống</span>
+              <h4>Lõi Ống Giấy 3 Inch</h4>
+              <p>Lõi ống giấy đường kính 3 inch (76mm), dài 30–150cm, dùng để cuộn giấy, vải, màng nhựa</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Lõi Ống Giấy 3 Inch')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="loi">
+            <div class="showcase-img red-bg">🎯</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Lõi Ống</span>
+              <h4>Lõi Ống Giấy 6 Inch</h4>
+              <p>Lõi ống giấy đường kính 6 inch (152mm), thành dày 5–10mm, chịu tải trọng cao</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: cuộn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Lõi Ống Giấy 6 Inch')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="vai">
+            <div class="showcase-img teal-bg">🧵</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Vải Vụn</span>
+              <h4>Vải Vụn Cotton</h4>
+              <p>Vải vụn cotton tổng hợp, đóng gói theo kg, dùng cho lau chùi công nghiệp, tái chế sợi</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Vải Vụn Cotton')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="showcase-card" data-cat="vai">
+            <div class="showcase-img indigo-bg">🪡</div>
+            <div class="showcase-info">
+              <span class="showcase-cat">Vải Vụn</span>
+              <h4>Vải Vụn Tổng Hợp</h4>
+              <p>Vải vụn hỗn hợp nhiều chất liệu, phân loại theo màu sắc, phù hợp tái chế và sản xuất</p>
+              <div class="showcase-meta">
+                <span class="showcase-unit">Đơn vị: kg / tấn</span>
+                <span class="showcase-price">Liên hệ báo giá</span>
+              </div>
+              <button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="addToCart('Vải Vụn Tổng Hợp')">🛒 Thêm vào giỏ</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Toast thông báo -->
+        <div id="toast" class="toast" style="display:none;">✅ Đã thêm vào giỏ hàng!</div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2024 CÔNG TY BK. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function showCat(cat, btn) {
+      document.querySelectorAll('.prod-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.showcase-card').forEach(card => {
+        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+
+    function addToCart(name) {
+      const cart = JSON.parse(localStorage.getItem('bk_cart') || '[]');
+      const idx = cart.findIndex(i => i.name === name);
+      if (idx >= 0) cart[idx].qty++;
+      else cart.push({ name, qty: 1 });
+      localStorage.setItem('bk_cart', JSON.stringify(cart));
+      showToast();
+      updateCartCount();
+    }
+
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 2000);
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('bk_cart') || '[]');
+      const total = cart.reduce((s, i) => s + i.qty, 0);
+      const el = document.getElementById('cartCount');
+      el.textContent = total;
+      el.classList.toggle('hidden', total === 0);
+    }
+
+    updateCartCount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký - Quản Lý Kho Giấy</title>
+  <link rel="stylesheet" href="css/main.css">
+  <!-- CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="js/api.js"></script>
+  
+  <script type="text/babel">
+    const { useState } = React;
+
+    function RegisterPage() {
+      const [formData, setFormData] = useState({
+        full_name: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: ''
+      });
+      const [error, setError] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const handleChange = (e) => {
+        setFormData({
+          ...formData,
+          [e.target.name]: e.target.value
+        });
+        setError('');
+      };
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        // Validation
+        if (!formData.full_name || !formData.email || !formData.phone || !formData.password || !formData.confirmPassword) {
+          setError('Vui lòng nhập đầy đủ thông tin');
+          return;
+        }
+
+        if (!formData.email.includes('@') || !formData.email.includes('.')) {
+          setError('Email không hợp lệ');
+          return;
+        }
+
+        if (formData.phone.length < 10 || formData.phone.length > 11) {
+          setError('Số điện thoại phải có 10-11 chữ số');
+          return;
+        }
+
+        if (formData.password.length < 8) {
+          setError('Mật khẩu phải có ít nhất 8 ký tự');
+          return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+          setError('Mật khẩu xác nhận không khớp');
+          return;
+        }
+
+        setLoading(true);
+
+        try {
+          await axios.post('/api/auth/register', {
+            full_name: formData.full_name,
+            email: formData.email,
+            phone: formData.phone,
+            password: formData.password
+          });
+
+          alert('Đăng ký thành công! Vui lòng đăng nhập.');
+          window.location.href = '/login.html';
+        } catch (err) {
+          setError(err.response?.data?.message || 'Đăng ký thất bại');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div className="auth-page">
+          <div className="auth-container">
+            <div className="auth-header">
+              <h1>📦 Quản Lý Kho Giấy</h1>
+              <h2>Đăng Ký Tài Khoản</h2>
+              <div className="auth-divider"></div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="auth-form">
+              {error && <div className="alert alert-error">{error}</div>}
+
+              <div className="form-group">
+                <label htmlFor="full_name">Họ và tên</label>
+                <input
+                  type="text"
+                  id="full_name"
+                  name="full_name"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  placeholder="Nguyễn Văn A"
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="example@email.com"
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="phone">Số điện thoại</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="0901234567"
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Mật khẩu</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Ít nhất 8 ký tự"
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Nhập lại mật khẩu"
+                  disabled={loading}
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                {loading ? 'Đang đăng ký...' : 'Đăng Ký'}
+              </button>
+            </form>
+
+            <div className="auth-footer">
+              <p>Đã có tài khoản? <a href="/login.html">Đăng nhập</a></p>
+              <p><a href="/index.html">← Về trang chủ</a></p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<RegisterPage />, document.getElementById('root'));
+  </script>
+</body>
+</html>
