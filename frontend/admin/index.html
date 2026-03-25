@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trang Quản Trị - Quản Lý Kho Giấy</title>
+  <title>Trang Quản Trị - CÔNG TY BK</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/admin.css">
   <!-- CDN -->
@@ -11,18 +12,31 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
   <div id="root">
     <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:18px;color:#666;">
-      Đang tải...
+      ⏳ Đang tải...
     </div>
   </div>
 
-  <script src="../js/api.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/utils.js"></script>
+  <!-- Utilities (plain JS, no Babel needed) -->
+  <script src="../js/api.jsx"></script>
+  <script src="../js/auth.jsx"></script>
+  <script src="../js/utils.jsx"></script>
+
+  <!-- Components (Babel JSX) — load theo thứ tự dependency -->
+  <script type="text/babel" src="components/shared.jsx"></script>
+  <script type="text/babel" src="components/dashboard.jsx"></script>
+  <script type="text/babel" src="components/warehouse.jsx"></script>
+  <script type="text/babel" src="components/products.jsx"></script>
+  <script type="text/babel" src="components/orders.jsx"></script>
+  <script type="text/babel" src="components/finance.jsx"></script>
+  <script type="text/babel" src="components/reports.jsx"></script>
+  <script type="text/babel" src="components/stockledger.jsx"></script>
+
+  <!-- App root — load cuối cùng -->
   <script type="text/babel" src="app-admin.jsx"></script>
 </body>
 </html>

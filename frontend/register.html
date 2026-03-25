@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng Ký - Quản Lý Kho Giấy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
   <link rel="stylesheet" href="css/main.css">
   <!-- CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -14,7 +15,7 @@
 <body>
   <div id="root"></div>
 
-  <script src="js/api.js"></script>
+  <script src="js/api.jsx"></script>
   
   <script type="text/babel">
     const { useState } = React;
@@ -58,8 +59,8 @@
           return;
         }
 
-        if (formData.password.length < 8) {
-          setError('Mật khẩu phải có ít nhất 8 ký tự');
+        if (formData.password.length < 1) {
+          setError('Vui lòng nhập mật khẩu');
           return;
         }
 
@@ -79,9 +80,26 @@
           });
 
           alert('Đăng ký thành công! Vui lòng đăng nhập.');
-          window.location.href = '/login.html';
+          window.location.href = 'login.html';
         } catch (err) {
-          setError(err.response?.data?.message || 'Đăng ký thất bại');
+          // Demo mode: khi chưa có backend thì tự lưu vào localStorage
+          const users = JSON.parse(localStorage.getItem('demo_users') || '[]');
+          if (users.find(u => u.email === formData.email)) {
+            setError('Email này đã được đăng ký');
+          } else {
+            const newUser = {
+              id: Date.now(),
+              full_name: formData.full_name,
+              email: formData.email,
+              phone: formData.phone,
+              password: formData.password,
+              role: 'customer',
+            };
+            users.push(newUser);
+            localStorage.setItem('demo_users', JSON.stringify(users));
+            alert('Đăng ký thành công! Vui lòng đăng nhập.');
+            window.location.href = 'login.html';
+          }
         } finally {
           setLoading(false);
         }
@@ -170,8 +188,8 @@
             </form>
 
             <div className="auth-footer">
-              <p>Đã có tài khoản? <a href="/login.html">Đăng nhập</a></p>
-              <p><a href="/index.html">← Về trang chủ</a></p>
+              <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+              <p><a href="index.html">← Về trang chủ</a></p>
             </div>
           </div>
         </div>

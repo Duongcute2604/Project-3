@@ -3,130 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng Nhập - Quản Lý Kho Giấy</title>
-  <link rel="stylesheet" href="css/main.css">
-  <!-- CDN -->
+  <title>Đăng Nhập - CÔNG TY BK</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</head>
-<body>
-  <div id="root"></div>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
-  
-  <script type="text/babel">
-    const { useState } = React;
-
-    function LoginPage() {
-      const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-      });
-      const [error, setError] = useState('');
-      const [loading, setLoading] = useState(false);
-
-      const handleChange = (e) => {
-        setFormData({
-          ...formData,
-          [e.target.name]: e.target.value
-        });
-        setError('');
-      };
-
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-
-        // Validation
-        if (!formData.email || !formData.password) {
-          setError('Vui lòng nhập đầy đủ thông tin');
-          return;
-        }
-
-        if (!formData.email.includes('@')) {
-          setError('Email không hợp lệ');
-          return;
-        }
-
-        setLoading(true);
-
-        try {
-          const response = await axios.post('/api/auth/login', formData);
-          const { token, user } = response.data;
-
-          // Lưu token vào localStorage
-          localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify(user));
-
-          // Chuyển hướng theo role
-          if (user.role === 'admin') {
-            window.location.href = '/admin/index.html';
-          } else {
-            window.location.href = '/customer/index.html';
-          }
-        } catch (err) {
-          setError(err.response?.data?.message || 'Đăng nhập thất bại');
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      return (
-        <div className="auth-page">
-          <div className="auth-container">
-            <div className="auth-header">
-              <h1>📦 Quản Lý Kho Giấy</h1>
-              <h2>Đăng Nhập</h2>
-              <div className="auth-divider"></div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="auth-form">
-              {error && <div className="alert alert-error">{error}</div>}
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="example@email.com"
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Mật khẩu</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  disabled={loading}
-                />
-              </div>
-
-              <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
-              </button>
-            </form>
-
-            <div className="auth-footer">
-              <p>Chưa có tài khoản? <a href="/register.html">Đăng ký ngay</a></p>
-              <p><a href="/index.html">← Về trang chủ</a></p>
-            </div>
-          </div>
-        </div>
-      );
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      background: #0f0f0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    ReactDOM.render(<LoginPage />, document.getElementById('root'));
-  </script>
+    .bg {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 50%, #0f0f0f 100%);
+      z-index: 0;
+    }
+    .bg::before {
+      content: ''; position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(244,67,54,0.12) 0%, transparent 70%);
+      top: -200px; right: -200px;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    .bg::after {
+      content: ''; position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(244,67,54,0.08) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    .grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(244,67,54,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244,67,54,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 440px; margin: 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,67,54,0.1);
+      animation: slideUp 0.5s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo-icon {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, #f44336, #b71c1c);
+      border-radius: 16px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(244,67,54,0.4);
+    }
+    .logo h1 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+    .logo p  { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+    .divider span { font-size: 13px; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+
+    .input-wrap { position: relative; }
+    .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+    .input-wrap input {
+      width: 100%; padding: 13px 14px 13px 42px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; color: #fff; font-size: 14px;
+      transition: all 0.2s; outline: none;
+    }
+    .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+    .input-wrap input:focus {
+      border-color: #f44336;
+      background: rgba(244,67,54,0.05);
+      box-shadow: 0 0 0 3px rgba(244,67,54,0.1);
+    }
+    .input-wrap input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .toggle-pw {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      color: rgba(255,255,255,0.3); transition: color 0.2s; padding: 0;
+    }
+    .toggle-pw:hover { color: rgba(255,255,255,0.7); }
+
+    .alert { padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .alert-error   { background: rgba(244,67,54,0.12); border: 1px solid rgba(244,67,54,0.3); color: #ef9a9a; }
+    .alert-success { background: rgba(76,175,80,0.12);  border: 1px solid rgba(76,175,80,0.3);  color: #a5d6a7; }
+
+    .btn-login {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #f44336, #c62828);
+      border: none; border-radius: 10px; color: #fff;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px; letter-spacing: 0.5px;
+      box-shadow: 0 4px 16px rgba(244,67,54,0.3);
+    }
+    .btn-login:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(244,67,54,0.45); }
+    .btn-login:active:not(:disabled) { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .demo-box {
+      margin-top: 24px; padding: 14px 16px;
+      background: rgba(244,67,54,0.06);
+      border: 1px solid rgba(244,67,54,0.2); border-radius: 10px;
+    }
+    .demo-box p { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .demo-accounts { display: flex; flex-direction: column; gap: 8px; }
+    .demo-account {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .demo-account:hover { background: rgba(244,67,54,0.1); border-color: rgba(244,67,54,0.3); }
+    .demo-account-info { display: flex; flex-direction: column; gap: 2px; }
+    .demo-account-role { font-size: 12px; font-weight: 600; color: #f44336; }
+    .demo-account-cred { font-size: 11px; color: rgba(255,255,255,0.35); font-family: monospace; }
+    .demo-fill-btn {
+      font-size: 11px; color: rgba(255,255,255,0.3);
+      background: none; border: none; cursor: pointer;
+      padding: 4px 8px; border-radius: 4px; transition: all 0.2s;
+    }
+    .demo-fill-btn:hover { background: rgba(244,67,54,0.2); color: #f44336; }
+
+    .auth-links { margin-top: 24px; text-align: center; display: flex; flex-direction: column; gap: 8px; }
+    .auth-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .auth-links a:hover { color: #f44336; }
+    .auth-links a span { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div id="root"></div>
+
+  <script src="js/api.jsx"></script>
+  <script src="js/auth.jsx"></script>
+  <script type="text/babel" src="js/app-login.jsx"></script>
 </body>
 </html>

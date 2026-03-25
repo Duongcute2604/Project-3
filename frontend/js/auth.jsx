@@ -30,19 +30,25 @@ const auth = {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/login.html';
+    // Tìm đường dẫn tương đối về login.html
+    const depth = window.location.pathname.split('/').filter(Boolean).length;
+    const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
+    window.location.href = prefix + 'login.html';
+    // Không dùng ?redirect=1 khi logout — để trang login không tự redirect lại
   },
 
   // Kiểm tra quyền truy cập trang admin
   requireAdmin() {
     if (!this.isLoggedIn()) {
       alert('Vui lòng đăng nhập để tiếp tục');
-      window.location.href = '/login.html';
+      const depth = window.location.pathname.split('/').filter(Boolean).length;
+      const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
+      window.location.href = prefix + 'login.html?redirect=1';
       return false;
     }
     if (!this.isAdmin()) {
       alert('Bạn không có quyền truy cập trang này');
-      window.location.href = '/customer/index.html';
+      window.location.href = '../customer/index.html';
       return false;
     }
     return true;
@@ -52,7 +58,9 @@ const auth = {
   requireAuth() {
     if (!this.isLoggedIn()) {
       alert('Vui lòng đăng nhập để tiếp tục');
-      window.location.href = '/login.html';
+      const depth = window.location.pathname.split('/').filter(Boolean).length;
+      const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
+      window.location.href = prefix + 'login.html?redirect=1';
       return false;
     }
     return true;
