@@ -19,6 +19,7 @@ function LoginPage() {
   // Chỉ tự redirect khi có param ?redirect=1 (do hệ thống gọi khi chưa đăng nhập)
   if (auth.isLoggedIn()) {
     if (window.location.search.includes('redirect=1')) {
+      // Đã đăng nhập + bị redirect từ trang khác → về đúng trang
       window.location.href = auth.isAdmin() ? 'admin/index.html' : 'customer/index.html';
       return null;
     }

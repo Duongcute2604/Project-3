@@ -26,23 +26,25 @@ const auth = {
     return this.getRole() === 'admin';
   },
 
-  // Đăng xuất
+  // Đăng xuất — về trang chủ
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    // Tìm đường dẫn tương đối về login.html
-    const depth = window.location.pathname.split('/').filter(Boolean).length;
-    const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
-    window.location.href = prefix + 'login.html';
-    // Không dùng ?redirect=1 khi logout — để trang login không tự redirect lại
+    // Tính prefix tương đối dựa vào độ sâu của URL hiện tại
+    const parts = window.location.pathname.replace(/\\/g, '/').split('/').filter(Boolean);
+    // Bỏ tên file cuối (index.html), đếm số thư mục còn lại
+    const dirs = parts.slice(0, -1);
+    const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
+    window.location.href = prefix + 'index.html';
   },
 
   // Kiểm tra quyền truy cập trang admin
   requireAdmin() {
     if (!this.isLoggedIn()) {
       alert('Vui lòng đăng nhập để tiếp tục');
-      const depth = window.location.pathname.split('/').filter(Boolean).length;
-      const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
+      const parts = window.location.pathname.replace(/\\/g, '/').split('/').filter(Boolean);
+      const dirs = parts.slice(0, -1);
+      const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
       window.location.href = prefix + 'login.html?redirect=1';
       return false;
     }
@@ -58,8 +60,9 @@ const auth = {
   requireAuth() {
     if (!this.isLoggedIn()) {
       alert('Vui lòng đăng nhập để tiếp tục');
-      const depth = window.location.pathname.split('/').filter(Boolean).length;
-      const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
+      const parts = window.location.pathname.replace(/\\/g, '/').split('/').filter(Boolean);
+      const dirs = parts.slice(0, -1);
+      const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
       window.location.href = prefix + 'login.html?redirect=1';
       return false;
     }
