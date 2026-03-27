@@ -35,7 +35,11 @@ axios.interceptors.response.use(
       const currentPath = window.location.pathname;
       if (!currentPath.includes('login') && !currentPath.includes('register') && !currentPath.includes('index.html')) {
         alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-        window.location.href = '/login.html';
+        // Tính đường dẫn tương đối
+        const parts = currentPath.replace(/\\/g, '/').split('/').filter(Boolean);
+        const dirs = parts.slice(0, -1);
+        const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
+        window.location.href = prefix + 'login.html?redirect=1';
       }
     }
     return Promise.reject(error);
