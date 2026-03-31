@@ -150,17 +150,7 @@ function Inventory() {
     setLoading(true);
     axios.get('/api/warehouse/inventory', { params: { search, page, limit: LIMIT } })
       .then(r => { setItems(r.data.data || r.data); setTotal(r.data.total || 0); })
-      .catch(() => {
-        setItems([
-          { product_id: 1, code: 'SP001', name: 'Giấy In A4 80gsm',     category: 'Giấy In',  quantity: 20,  unit: 'ream',  min_stock: 50,  price: 85000 },
-          { product_id: 2, code: 'SP002', name: 'Giấy Khổ Lớn A0',      category: 'Giấy In',  quantity: 150, unit: 'cuộn', min_stock: 30,  price: 320000 },
-          { product_id: 3, code: 'SP003', name: 'Giấy Ảnh Bóng A4',     category: 'Giấy Ảnh', quantity: 200, unit: 'ream',  min_stock: 50,  price: 150000 },
-          { product_id: 4, code: 'SP004', name: 'Lõi Ống 3 Inch',       category: 'Lõi Ống',  quantity: 45,  unit: 'cuộn', min_stock: 100, price: 12000 },
-          { product_id: 5, code: 'SP005', name: 'Vải Vụn Cotton',        category: 'Vải Vụn',  quantity: 80,  unit: 'kg',   min_stock: 200, price: 25000 },
-          { product_id: 6, code: 'SP006', name: 'Giấy Bìa Cứng 300gsm', category: 'Giấy Bìa', quantity: 500, unit: 'tờ',   min_stock: 100, price: 5000 },
-        ]);
-        setTotal(6);
-      })
+      .catch(() => { setItems([]); setTotal(0); })
       .finally(() => setLoading(false));
   }, [search, page]);
 

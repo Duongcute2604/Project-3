@@ -4,10 +4,11 @@
 
 const { useState, useEffect, useCallback, useRef } = React;
 
-// Kiểm tra quyền admin — redirect kèm ?redirect=1 để trang login không xóa token
-if (!auth.isLoggedIn() || !auth.isAdmin()) {
-  alert('Vui lòng đăng nhập bằng tài khoản quản trị viên!');
+// Kiểm tra quyền admin — không dùng alert, redirect thẳng
+if (!auth.isLoggedIn()) {
   window.location.href = '../login.html?redirect=1';
+} else if (!auth.isAdmin()) {
+  window.location.href = '../customer/index.html';
 }
 
 const currentUser = auth.getUser();

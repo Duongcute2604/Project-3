@@ -14,18 +14,19 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw]   = useState(false);
 
-  // Nếu vào login.html chủ động (không phải redirect từ hệ thống) → xóa token cũ
-  // Chỉ tự redirect khi có param ?redirect=1 (do hệ thống gọi khi chưa đăng nhập)
-  if (auth.isLoggedIn()) {
+  // Xử lý auth state khi mount — chỉ chạy 1 lần
+  React.useEffect(() => {
+    if (!auth.isLoggedIn()) return;
+
     if (window.location.search.includes('redirect=1')) {
-      // Đã đăng nhập + bị redirect từ trang khác → về đúng trang
+      // Bị redirect từ trang cần auth → về đúng trang
       window.location.href = auth.isAdmin() ? 'admin/index.html' : 'customer/index.html';
-      return null;
+    } else {
+      // Vào login chủ động → xóa token cũ (đăng xuất)
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
-    // Người dùng chủ động vào trang login → xóa token (cả JWT thật lẫn demo)
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  }
+  }, []);
 
   const fill = (acc) => {
     setForm({ email: acc.email, password: acc.password });

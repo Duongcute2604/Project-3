@@ -131,14 +131,7 @@ function ReportStock() {
   useEffect(() => {
     axios.get('/api/reports/inventory')
       .then(r => setItems(r.data.data || r.data))
-      .catch(() => setItems([
-        { code: 'SP001', name: 'Giay In A4 80gsm',     quantity: 20,  unit: 'ream',  min_stock: 50,  price: 85000,  total_value: 1700000 },
-        { code: 'SP002', name: 'Giay Kho Lon A0',      quantity: 150, unit: 'cuon',  min_stock: 30,  price: 320000, total_value: 48000000 },
-        { code: 'SP003', name: 'Giay Anh Bong A4',     quantity: 200, unit: 'ream',  min_stock: 50,  price: 150000, total_value: 30000000 },
-        { code: 'SP004', name: 'Loi Ong 3 Inch',       quantity: 45,  unit: 'cuon',  min_stock: 100, price: 12000,  total_value: 540000 },
-        { code: 'SP005', name: 'Vai Vun Cotton',        quantity: 80,  unit: 'kg',    min_stock: 200, price: 25000,  total_value: 2000000 },
-        { code: 'SP006', name: 'Giay Bia Cung 300gsm', quantity: 500, unit: 'to',    min_stock: 100, price: 5000,   total_value: 2500000 },
-      ]))
+      .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, []);
 
