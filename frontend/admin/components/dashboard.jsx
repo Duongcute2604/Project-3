@@ -8,7 +8,19 @@ function Dashboard({ setPage }) {
 
   useEffect(() => {
     axios.get('/api/reports/dashboard')
-      .then(r => setStats(r.data.data))
+      .then(r => {
+        // API trả về r.data trực tiếp (không có wrapper .data)
+        const d = r.data;
+        setStats({
+          today_revenue:      d.today_revenue      || 0,
+          pending_orders:     d.pending_orders      || d.total_orders || 0,
+          low_stock_count:    d.low_stock_count     || 0,
+          month_revenue:      d.month_revenue       || d.total_revenue || 0,
+          recent_orders:      d.recent_orders       || [],
+          low_stock_products: d.low_stock_products  || [],
+          revenue_7days:      d.revenue_7days       || [],
+        });
+      })
       .catch(() => setStats({
         today_revenue: 12500000,
         pending_orders: 5,

@@ -174,16 +174,47 @@ router.get('/inventory', authMiddleware, async (req, res) => {
 // GET /api/reports/dashboard
 router.get('/dashboard', authMiddleware, async (req, res) => {
   try {
-    const [[orders]]   = await db.query(`SELECT COUNT(*) total, SUM(total_amount) revenue FROM orders WHERE order_status != 'cancelled'`);
-    const [[products]] = await db.query('SELECT COUNT(*) total FROM products WHERE is_visible=1');
-    const [[lowStock]] = await db.query('SELECT COUNT(*) total FROM products p JOIN inventory i ON i.product_id=p.id WHERE i.quantity < p.min_stock AND p.min_stock > 0');
-    const [[customers]]= await db.query('SELECT COUNT(*) total FROM customers');
+    const [[orders]]    = await db.query(`SELECT COUNT(*) total, COALESCE(SUM(total_amount),0) revenue FROM orders WHERE order_status != 'cancelled'`);
+    const [[pending]]   = await db.query(`SELECT COUNT(*) total FROM orders WHERE order_status = 'pending'`);
+    const [[products]]  = await db.query('SELECT COUNT(*) total FROM products WHERE is_visible=1');
+    const [[lowStock]]  = await db.query('SELECT COUNT(*) total FROM products p JOIN inventory i ON i.product_id=p.id WHERE i.quantity < p.min_stock AND p.min_stock > 0');
+    const [[customers]] = await db.query('SELECT COUNT(*) total FROM customers');
+
+    // Doanh thu hôm nay
+    const [[today]] = await db.query(
+      `SELECT COALESCE(SUM(total_amount),0) revenue FROM orders WHERE DATE(created_at) = CURDATE() AND order_status != 'cancelled'`
+    );
+    // Doanh thu tháng này
+    const [[month]] = await db.query(
+      `SELECT COALESCE(SUM(total_amount),0) revenue FROM orders WHERE DATE_FORMAT(created_at,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m') AND order_status != 'cancelled'`
+    );
+    // 5 đơn hàng mới nhất
+    const [recentOrders] = await db.query(
+      `SELECT id, code, customer_name customer, total_amount total, order_status status, created_at FROM orders ORDER BY created_at DESC LIMIT 5`
+    );
+    // Sản phẩm tồn kho thấp
+    const [lowStockProducts] = await db.query(
+      `SELECT p.name, i.quantity, p.min_stock, p.unit FROM products p JOIN inventory i ON i.product_id=p.id WHERE i.quantity < p.min_stock AND p.min_stock > 0 ORDER BY (i.quantity/p.min_stock) LIMIT 5`
+    );
+    // Doanh thu 7 ngày gần nhất
+    const [revenue7] = await db.query(
+      `SELECT DATE_FORMAT(created_at,'%d/%m') date, COALESCE(SUM(total_amount),0) revenue
+       FROM orders WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND order_status != 'cancelled'
+       GROUP BY DATE(created_at) ORDER BY DATE(created_at)`
+    );
+
     res.json({
-      total_orders:    orders.total,
-      total_revenue:   orders.revenue || 0,
-      total_products:  products.total,
-      low_stock_count: lowStock.total,
-      total_customers: customers.total,
+      total_orders:       orders.total,
+      total_revenue:      Number(orders.revenue),
+      pending_orders:     pending.total,
+      total_products:     products.total,
+      low_stock_count:    lowStock.total,
+      total_customers:    customers.total,
+      today_revenue:      Number(today.revenue),
+      month_revenue:      Number(month.revenue),
+      recent_orders:      recentOrders,
+      low_stock_products: lowStockProducts,
+      revenue_7days:      revenue7.map(r => ({ date: r.date, revenue: Number(r.revenue) })),
     });
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
