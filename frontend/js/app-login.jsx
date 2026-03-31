@@ -22,7 +22,7 @@ function LoginPage() {
       window.location.href = auth.isAdmin() ? 'admin/index.html' : 'customer/index.html';
       return null;
     }
-    // Người dùng chủ động vào trang login → đăng xuất session cũ
+    // Người dùng chủ động vào trang login → xóa token (cả JWT thật lẫn demo)
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }

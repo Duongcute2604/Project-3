@@ -72,17 +72,25 @@
         setLoading(true);
 
         try {
-          await axios.post('/api/auth/register', {
+          const res = await axios.post('/api/auth/register', {
             full_name: formData.full_name,
             email: formData.email,
             phone: formData.phone,
             password: formData.password
           });
 
-          alert('Đăng ký thành công! Vui lòng đăng nhập.');
-          window.location.href = 'login.html';
+          // Đăng ký thành công → tự đăng nhập luôn
+          const loginRes = await axios.post('/api/auth/login', {
+            email: formData.email,
+            password: formData.password
+          });
+          const { token, user } = loginRes.data;
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          window.location.href = user.role === 'admin' ? 'admin/index.html' : 'customer/index.html';
+
         } catch (err) {
-          // Demo mode: khi chưa có backend thì tự lưu vào localStorage
+          // Fallback khi chưa có backend
           const users = JSON.parse(localStorage.getItem('demo_users') || '[]');
           if (users.find(u => u.email === formData.email)) {
             setError('Email này đã được đăng ký');
@@ -97,8 +105,10 @@
             };
             users.push(newUser);
             localStorage.setItem('demo_users', JSON.stringify(users));
-            alert('Đăng ký thành công! Vui lòng đăng nhập.');
-            window.location.href = 'login.html';
+            // Tự đăng nhập luôn
+            localStorage.setItem('token', 'demo-token-' + Date.now());
+            localStorage.setItem('user', JSON.stringify(newUser));
+            window.location.href = 'customer/index.html';
           }
         } finally {
           setLoading(false);
