@@ -5,8 +5,7 @@
 const { useState } = React;
 
 const DEMO_ACCOUNTS = [
-  { role: 'Admin',      email: 'admin@congty.com',    password: '1',      label: 'Quản trị viên' },
-  { role: 'Khách hàng', email: 'customer@email.com',  password: '123456', label: 'Khách hàng' },
+  { role: 'Admin',      email: 'admin@congty.com', password: '1', label: 'Quản trị viên' },
 ];
 
 function LoginPage() {
@@ -51,23 +50,10 @@ function LoginPage() {
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = user.role === 'admin' ? 'admin/index.html' : 'customer/index.html';
     } catch (err) {
-      // Demo mode: giả lập khi chưa có backend
-      const demo = DEMO_ACCOUNTS.find(a => a.email === form.email && a.password === form.password);
-      // Kiểm tra thêm tài khoản đã đăng ký qua trang register
+      // Fallback demo khi chưa có backend
       const demoUsers = JSON.parse(localStorage.getItem('demo_users') || '[]');
       const registeredUser = demoUsers.find(u => u.email === form.email && u.password === form.password);
-
-      if (demo) {
-        const fakeUser = {
-          id: 1,
-          full_name: demo.role === 'Admin' ? 'Quản Trị Viên' : 'Khách Hàng',
-          email: demo.email,
-          role: demo.role === 'Admin' ? 'admin' : 'customer',
-        };
-        localStorage.setItem('token', 'demo-token-' + Date.now());
-        localStorage.setItem('user', JSON.stringify(fakeUser));
-        window.location.href = fakeUser.role === 'admin' ? 'admin/index.html' : 'customer/index.html';
-      } else if (registeredUser) {
+      if (registeredUser) {
         localStorage.setItem('token', 'demo-token-' + Date.now());
         localStorage.setItem('user', JSON.stringify(registeredUser));
         window.location.href = 'customer/index.html';

@@ -22,7 +22,7 @@ router.get('/', authMiddleware, async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
-// GET /api/orders/unpaid
+// GET /api/orders/unpaid — phải đặt TRƯỚC /:id để không bị conflict
 router.get('/unpaid', authMiddleware, async (req, res) => {
   try {
     const [data] = await db.query(

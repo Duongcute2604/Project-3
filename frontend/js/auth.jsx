@@ -30,12 +30,16 @@ const auth = {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    // Tính prefix tương đối dựa vào độ sâu của URL hiện tại
-    const parts = window.location.pathname.replace(/\\/g, '/').split('/').filter(Boolean);
-    // Bỏ tên file cuối (index.html), đếm số thư mục còn lại
-    const dirs = parts.slice(0, -1);
-    const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
-    window.location.href = prefix + 'index.html';
+    // Tìm vị trí 'frontend' trong path để tính đường về index.html
+    const path = window.location.pathname.replace(/\\/g, '/');
+    const frontendIdx = path.indexOf('/frontend/');
+    if (frontendIdx !== -1) {
+      // Đang trong thư mục frontend → về /frontend/index.html
+      window.location.href = path.substring(0, frontendIdx) + '/frontend/index.html';
+    } else {
+      // Fallback: về login
+      window.location.href = 'login.html';
+    }
   },
 
   // Kiểm tra quyền truy cập trang admin

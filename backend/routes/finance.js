@@ -3,7 +3,7 @@ const db = require('../db');
 const { authMiddleware, adminOnly } = require('../middleware/auth');
 
 // ---- EXPENSES ----
-router.get('/expenses', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const offset = (page - 1) * limit;
   try {
@@ -16,7 +16,7 @@ router.get('/expenses', authMiddleware, async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
-router.post('/expenses', authMiddleware, adminOnly, async (req, res) => {
+router.post('/', authMiddleware, adminOnly, async (req, res) => {
   const { type, amount, expense_date, description } = req.body;
   if (!type || !amount || !expense_date)
     return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
@@ -29,7 +29,7 @@ router.post('/expenses', authMiddleware, adminOnly, async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
-router.put('/expenses/:id', authMiddleware, adminOnly, async (req, res) => {
+router.put('/:id', authMiddleware, adminOnly, async (req, res) => {
   const { type, amount, expense_date, description } = req.body;
   try {
     await db.query(
@@ -40,7 +40,7 @@ router.put('/expenses/:id', authMiddleware, adminOnly, async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 
-router.delete('/expenses/:id', authMiddleware, adminOnly, async (req, res) => {
+router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
   try {
     await db.query('DELETE FROM expenses WHERE id=?', [req.params.id]);
     res.json({ message: 'Đã xóa' });

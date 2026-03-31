@@ -22,25 +22,27 @@ axios.interceptors.request.use(
 
 // Response interceptor - xử lý lỗi 401 (token hết hạn)
 axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token hết hạn hoặc không hợp lệ
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      // Redirect về trang login nếu không phải đang ở trang login/register
-      const currentPath = window.location.pathname;
-      if (!currentPath.includes('login') && !currentPath.includes('register') && !currentPath.includes('index.html')) {
-        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-        // Tính đường dẫn tương đối
-        const parts = currentPath.replace(/\\/g, '/').split('/').filter(Boolean);
-        const dirs = parts.slice(0, -1);
-        const prefix = dirs.length > 0 ? '../'.repeat(dirs.length) : './';
-        window.location.href = prefix + 'login.html?redirect=1';
+      const url = error.config?.url || '';
+      // Bỏ qua 401 từ API login (sai mật khẩu — để component tự xử lý)
+      if (url.includes('/api/auth/')) {
+        return Promise.reject(error);
       }
+      // Chỉ redirect nếu đang ở trang admin/customer VÀ token là JWT thật (không phải demo)
+      const token = localStorage.getItem('token') || '';
+      const isRealJWT = token.split('.').length === 3; // JWT có 3 phần ngăn cách bởi dấu .
+      if (isRealJWT) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        const currentPath = window.location.pathname;
+        const frontendIdx = currentPath.indexOf('/frontend/');
+        const base = frontendIdx !== -1 ? currentPath.substring(0, frontendIdx) + '/frontend/' : './';
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        window.location.href = base + 'login.html?redirect=1';
+      }
+      // Demo token bị 401 → im lặng, để component fallback tự xử lý
     }
     return Promise.reject(error);
   }

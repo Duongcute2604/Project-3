@@ -11,8 +11,8 @@ USE warehouse_db;
 -- ============================================================
 INSERT INTO users (full_name, email, phone, password, role) VALUES
   ('Quản Trị Viên', 'admin@congty.com', '0900000000',
-   '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lHi6', 'admin')
-ON DUPLICATE KEY UPDATE id = id;
+   '$2a$10$Ba0nXEHinl6KlKIdwUdRH.liT98KEnWtTRULHoI9lG2z.sYvIR.Yu', 'admin')
+ON DUPLICATE KEY UPDATE password = '$2a$10$Ba0nXEHinl6KlKIdwUdRH.liT98KEnWtTRULHoI9lG2z.sYvIR.Yu';
 
 -- ============================================================
 -- Danh mục mặc định (có thể thêm/sửa/xóa trong admin)

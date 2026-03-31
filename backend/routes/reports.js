@@ -4,7 +4,7 @@ const { authMiddleware, adminOnly } = require('../middleware/auth');
 
 // GET /api/reports/stock-summary?month=2024-06
 router.get('/stock-summary', authMiddleware, async (req, res) => {
-  const { month } = req.query; // format: YYYY-MM
+  const { month } = req.query;
   if (!month) return res.status(400).json({ message: 'Thiếu tham số month (YYYY-MM)' });
 
   const [year, mon] = month.split('-');
@@ -12,43 +12,43 @@ router.get('/stock-summary', authMiddleware, async (req, res) => {
   const endDate   = `${year}-${mon}-31`;
 
   try {
-    // Lấy tất cả sản phẩm có giao dịch trong tháng hoặc có tồn kho
     const [products] = await db.query(
-      `SELECT p.id, p.code, p.name, p.unit FROM products p ORDER BY p.code`
+      `SELECT p.id, p.code, p.name, p.unit, COALESCE(i.quantity,0) close_qty
+       FROM products p
+       LEFT JOIN inventory i ON i.product_id = p.id
+       ORDER BY p.code`
     );
 
-    const rows = await Promise.all(products.map(async (p) => {
-      // Tồn đầu kỳ = tồn hiện tại - nhập trong tháng + xuất trong tháng
-      const [[inv]]     = await db.query('SELECT COALESCE(quantity,0) qty FROM inventory WHERE product_id=?', [p.id]);
-      const [[inMonth]] = await db.query(
-        'SELECT COALESCE(SUM(quantity),0) qty, COALESCE(SUM(total_price),0) val FROM warehouse_receipts WHERE product_id=? AND receipt_date BETWEEN ? AND ?',
-        [p.id, startDate, endDate]
-      );
-      const [[outMonth]] = await db.query(
-        'SELECT COALESCE(SUM(quantity),0) qty, COALESCE(SUM(total_price),0) val FROM warehouse_issues WHERE product_id=? AND issue_date BETWEEN ? AND ?',
-        [p.id, startDate, endDate]
-      );
+    // Gộp nhập/xuất trong tháng bằng 2 query thay vì N*3
+    const [inRows] = await db.query(
+      `SELECT product_id, SUM(quantity) qty, SUM(total_price) val
+       FROM warehouse_receipts WHERE receipt_date BETWEEN ? AND ?
+       GROUP BY product_id`, [startDate, endDate]
+    );
+    const [outRows] = await db.query(
+      `SELECT product_id, SUM(quantity) qty, SUM(total_price) val
+       FROM warehouse_issues WHERE issue_date BETWEEN ? AND ?
+       GROUP BY product_id`, [startDate, endDate]
+    );
 
-      const close_qty = Number(inv.qty);
-      const in_qty    = Number(inMonth.qty);
-      const out_qty   = Number(outMonth.qty);
+    const inMap  = Object.fromEntries(inRows.map(r  => [r.product_id, r]));
+    const outMap = Object.fromEntries(outRows.map(r => [r.product_id, r]));
+
+    const data = products.map(p => {
+      const close_qty = Number(p.close_qty);
+      const in_qty    = Number(inMap[p.id]?.qty  || 0);
+      const in_val    = Number(inMap[p.id]?.val  || 0);
+      const out_qty   = Number(outMap[p.id]?.qty || 0);
+      const out_val   = Number(outMap[p.id]?.val || 0);
       const open_qty  = close_qty - in_qty + out_qty;
 
-      // Bỏ qua sản phẩm không có giao dịch và tồn = 0
       if (open_qty === 0 && in_qty === 0 && out_qty === 0 && close_qty === 0) return null;
 
-      return {
-        code:      p.code,
-        name:      p.name,
-        unit:      p.unit,
-        open_qty,  open_val:  0,
-        in_qty,    in_val:    Number(inMonth.val),
-        out_qty,   out_val:   Number(outMonth.val),
-        close_qty, close_val: 0,
-      };
-    }));
+      return { code: p.code, name: p.name, unit: p.unit,
+               open_qty, open_val: 0, in_qty, in_val, out_qty, out_val, close_qty, close_val: 0 };
+    }).filter(Boolean);
 
-    res.json({ data: rows.filter(Boolean), month });
+    res.json({ data, month });
   } catch (e) { res.status(500).json({ message: e.message }); }
 });
 

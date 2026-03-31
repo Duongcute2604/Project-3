@@ -101,8 +101,11 @@ router.post('/issues', authMiddleware, adminOnly, async (req, res) => {
     await conn.beginTransaction();
     // Kiểm tra tồn kho
     const [[inv]] = await conn.query('SELECT quantity FROM inventory WHERE product_id=?', [product_id]);
-    if (!inv || inv.quantity < quantity)
+    if (!inv || Number(inv.quantity) < Number(quantity)) {
+      await conn.rollback();
+      conn.release();
       return res.status(400).json({ message: 'Tồn kho không đủ' });
+    }
 
     const [[{ cnt }]] = await conn.query('SELECT COUNT(*) cnt FROM warehouse_issues');
     const code = 'PX' + String(cnt + 1).padStart(4, '0');
