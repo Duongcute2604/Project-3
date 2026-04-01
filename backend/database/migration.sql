@@ -292,3 +292,17 @@ SELECT
 FROM orders o
 LEFT JOIN payments pay ON pay.order_id = o.id
 GROUP BY o.id;
+
+-- ============================================================
+-- 19. CONTACT REQUESTS (yêu cầu báo giá từ khách)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS contact_requests (
+  id          INT PRIMARY KEY AUTO_INCREMENT,
+  full_name   VARCHAR(150) NOT NULL,
+  phone       VARCHAR(15)  NOT NULL,
+  email       VARCHAR(150),
+  product     VARCHAR(200),
+  message     TEXT,
+  status      ENUM('new','contacted','done') NOT NULL DEFAULT 'new',
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

@@ -19,6 +19,7 @@ app.use('/api/customers', require('./routes/customers'));
 app.use('/api/suppliers', require('./routes/suppliers'));
 app.use('/api/expenses',  require('./routes/finance'));
 app.use('/api/reports',   require('./routes/reports'));
+app.use('/api/contacts',  require('./routes/contacts'));
 
 // ---- Health check ----
 app.get('/api/ping', (req, res) => res.json({ ok: true, time: new Date() }));

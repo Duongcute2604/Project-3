@@ -174,3 +174,118 @@ function ReportStock() {
     </div>
   );
 }
+
+// ============================================================
+// YÊU CẦU BÁO GIÁ TỪ KHÁCH HÀNG
+// ============================================================
+function ContactRequests() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [alertMsg, setAlertMsg] = useState(null);
+
+  const STATUS = {
+    new:       { label: '🆕 Mới',         cls: 'badge-pending' },
+    contacted: { label: '📞 Đã liên hệ',  cls: 'badge-approved' },
+    done:      { label: '✅ Hoàn thành',  cls: 'badge-success' },
+  };
+
+  const load = () => {
+    setLoading(true);
+    axios.get('/api/contacts', { params: { status: statusFilter, limit: 50 } })
+      .then(r => setItems(r.data.data || r.data))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, [statusFilter]);
+
+  const updateStatus = (id, status) => {
+    axios.patch(`/api/contacts/${id}/status`, { status })
+      .then(() => { setAlertMsg({ type: 'success', msg: 'Cập nhật thành công!' }); load(); })
+      .catch(() => setAlertMsg({ type: 'error', msg: 'Lỗi cập nhật' }));
+  };
+
+  const newCount = items.filter(i => i.status === 'new').length;
+
+  return (
+    <div>
+      {alertMsg && <Alert type={alertMsg.type} msg={alertMsg.msg} onClose={() => setAlertMsg(null)} />}
+
+      {newCount > 0 && (
+        <div style={{ background: '#fff3e0', border: '1px solid #ffb74d', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', color: '#e65100', fontWeight: 600 }}>
+          🔔 Có {newCount} yêu cầu báo giá mới chưa xử lý!
+        </div>
+      )}
+
+      <div className="card">
+        <div className="card-header">
+          <h3>📩 Yêu Cầu Báo Giá Từ Khách Hàng</h3>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+              <option value="">Tất cả</option>
+              <option value="new">🆕 Mới</option>
+              <option value="contacted">📞 Đã liên hệ</option>
+              <option value="done">✅ Hoàn thành</option>
+            </select>
+            <button className="btn btn-secondary btn-sm" onClick={load}>🔄 Làm mới</button>
+          </div>
+        </div>
+
+        {loading ? <div className="loading">⏳ Đang tải...</div> : (
+          items.length === 0
+            ? <div className="empty-state"><div className="empty-icon">📭</div><p>Chưa có yêu cầu nào</p></div>
+            : (
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Họ tên</th>
+                      <th>SĐT</th>
+                      <th>Email</th>
+                      <th>Sản phẩm</th>
+                      <th>Nội dung</th>
+                      <th>Thời gian</th>
+                      <th>Trạng thái</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map(item => (
+                      <tr key={item.id} style={{ background: item.status === 'new' ? 'rgba(255,183,77,0.05)' : '' }}>
+                        <td style={{ fontWeight: 600 }}>{item.full_name}</td>
+                        <td>
+                          <a href={`tel:${item.phone}`} style={{ color: '#42a5f5' }}>{item.phone}</a>
+                        </td>
+                        <td style={{ color: '#9e9e9e' }}>{item.email || '—'}</td>
+                        <td><span className="badge badge-approved">{item.product || '—'}</span></td>
+                        <td style={{ maxWidth: '200px', color: '#9e9e9e', fontSize: '12px' }}>
+                          {item.message ? item.message.slice(0, 80) + (item.message.length > 80 ? '...' : '') : '—'}
+                        </td>
+                        <td style={{ color: '#9e9e9e', fontSize: '12px' }}>{utils.formatDateTime(item.created_at)}</td>
+                        <td>
+                          <span className={`badge ${STATUS[item.status]?.cls}`}>{STATUS[item.status]?.label}</span>
+                        </td>
+                        <td>
+                          <select
+                            className="filter-select"
+                            style={{ fontSize: '12px', padding: '4px 8px' }}
+                            value={item.status}
+                            onChange={e => updateStatus(item.id, e.target.value)}
+                          >
+                            <option value="new">🆕 Mới</option>
+                            <option value="contacted">📞 Đã liên hệ</option>
+                            <option value="done">✅ Hoàn thành</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+        )}
+      </div>
+    </div>
+  );
+}

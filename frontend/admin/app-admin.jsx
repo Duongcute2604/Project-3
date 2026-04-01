@@ -38,6 +38,8 @@ const MENU = [
   { key: 'rpt-revenue', icon: '📈', label: 'Doanh Thu' },
   { key: 'rpt-expense', icon: '📉', label: 'Chi Phí' },
   { key: 'rpt-stock',   icon: '📋', label: 'Tồn Kho' },
+  { section: 'KHÁC' },
+  { key: 'contacts',    icon: '📩', label: 'Yêu Cầu Báo Giá' },
 ];
 
 const PAGE_TITLES = {
@@ -57,6 +59,7 @@ const PAGE_TITLES = {
   'rpt-revenue':'Báo Cáo Doanh Thu',
   'rpt-expense':'Báo Cáo Chi Phí',
   'rpt-stock':  'Báo Cáo Tồn Kho',
+  'contacts':   'Yêu Cầu Báo Giá',
 };
 
 const STATUS_MAP = {
@@ -97,6 +100,7 @@ function AdminApp() {
       case 'rpt-revenue': return <ReportRevenue />;
       case 'rpt-expense': return <ReportExpense />;
       case 'rpt-stock':   return <ReportStock />;
+      case 'contacts':    return <ContactRequests />;
       default:            return <Dashboard setPage={setPage} />;
     }
   };
