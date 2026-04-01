@@ -112,21 +112,21 @@
         <h3 class="section-title">Đặt Hàng Chỉ 3 Bước</h3>
         <p class="section-subtitle">Đơn giản, nhanh chóng và minh bạch</p>
         <div class="process-grid">
-          <div class="process-card">
+          <div class="process-card" onclick="window.location.href='san-pham.html'" style="cursor:pointer">
             <div class="process-num">01</div>
             <div class="process-icon">🔍</div>
             <h4>Tìm & Chọn Sản Phẩm</h4>
             <p>Duyệt danh mục sản phẩm, tìm kiếm theo tên hoặc loại hàng, thêm vào giỏ hàng</p>
           </div>
-          <div class="process-arrow">→</div>
-          <div class="process-card">
+          <div class="process-arrow reveal">→</div>
+          <div class="process-card" onclick="window.location.href='gio-hang.html'" style="cursor:pointer">
             <div class="process-num">02</div>
             <div class="process-icon">📋</div>
             <h4>Xác Nhận Đơn Hàng</h4>
             <p>Kiểm tra giỏ hàng, điền thông tin giao hàng và chọn phương thức thanh toán</p>
           </div>
-          <div class="process-arrow">→</div>
-          <div class="process-card">
+          <div class="process-arrow reveal">→</div>
+          <div class="process-card" onclick="window.location.href='customer/index.html'" style="cursor:pointer">
             <div class="process-num">03</div>
             <div class="process-icon">🚚</div>
             <h4>Nhận Hàng & Thanh Toán</h4>
@@ -481,12 +481,36 @@
 
     // Intersection Observer cho counter
     const counters = document.querySelectorAll('[data-count]');
-    const observer = new IntersectionObserver((entries) => {
+    const counterObs = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting) { animateCount(e.target); observer.unobserve(e.target); }
+        if (e.isIntersecting) { animateCount(e.target); counterObs.unobserve(e.target); }
       });
     }, { threshold: 0.5 });
-    counters.forEach(c => observer.observe(c));
+    counters.forEach(c => counterObs.observe(c));
+
+    // Scroll reveal animation
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('revealed'), i * 80);
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    // Feature cards click
+    document.querySelectorAll('.feature-card').forEach((card, i) => {
+      const links = ['#san-pham', '#san-pham', 'customer/index.html', '#gioi-thieu'];
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => window.location.href = links[i] || '#');
+    });
+
+    // Showcase cards click
+    document.querySelectorAll('.showcase-card').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => window.location.href = 'san-pham.html');
+    });
 
     // Filter sản phẩm
     let currentCategory = 'all';

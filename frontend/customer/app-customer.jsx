@@ -4,15 +4,12 @@
 
 const { useState, useEffect, useCallback } = React;
 
-// Kiểm tra đăng nhập
-if (!auth.isLoggedIn()) {
-  window.location.href = '../login.html?redirect=1';
-}
-
+// Kiểm tra đăng nhập — chỉ cần khi đặt hàng, không cần khi xem sản phẩm
 const currentUser = auth.getUser();
 
 // ---- Header ----
 function CustomerHeader({ cartCount, setPage }) {
+  const user = auth.getUser();
   return (
     <header style={{
       background: '#1a1a1a', borderBottom: '1px solid #2a2a2a',
@@ -37,10 +34,19 @@ function CustomerHeader({ cartCount, setPage }) {
             }}>{cartCount}</span>
           )}
         </button>
-        <button className="btn btn-secondary btn-sm" onClick={() => setPage('history')}>📋 Đơn hàng</button>
-        <span style={{ color: '#9e9e9e', fontSize: '13px' }}>👤 {currentUser?.full_name}</span>
-        <button className="btn btn-sm" style={{ background: '#333', color: '#ccc', border: '1px solid #444' }}
-          onClick={() => auth.logout()}>⏻ Thoát</button>
+        {user ? (
+          <>
+            <button className="btn btn-secondary btn-sm" onClick={() => setPage('history')}>📋 Đơn hàng</button>
+            <span style={{ color: '#9e9e9e', fontSize: '13px' }}>👤 {user.full_name}</span>
+            <button className="btn btn-sm" style={{ background: '#333', color: '#ccc', border: '1px solid #444' }}
+              onClick={() => auth.logout()}>⏻ Thoát</button>
+          </>
+        ) : (
+          <>
+            <a href="../login.html" className="btn btn-sm" style={{ background: '#1565c0', color: '#fff', border: 'none' }}>Đăng Nhập</a>
+            <a href="../register.html" className="btn btn-sm" style={{ background: '#f44336', color: '#fff', border: 'none' }}>Đăng Ký</a>
+          </>
+        )}
       </div>
     </header>
   );
@@ -253,11 +259,19 @@ function CustomerApp() {
 
   const checkout = async () => {
     if (cart.length === 0) return;
+
+    // Yêu cầu đăng nhập khi đặt hàng
+    if (!auth.isLoggedIn()) {
+      window.location.href = '../login.html?redirect=1';
+      return;
+    }
+
+    const user = auth.getUser();
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
     try {
       await axios.post('/api/orders', {
-        customer_name:  currentUser.full_name,
-        customer_phone: currentUser.phone || '',
+        customer_name:  user.full_name,
+        customer_phone: user.phone || '',
         subtotal:       total,
         total_amount:   total,
         payment_method: 'transfer',

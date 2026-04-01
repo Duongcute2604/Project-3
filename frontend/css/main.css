@@ -1282,17 +1282,13 @@ html {
 }
 
 .process-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   gap: 0;
-  flex-wrap: wrap;
 }
 
 .process-card {
-  flex: 1;
-  min-width: 220px;
-  max-width: 280px;
   text-align: center;
   padding: 32px 24px;
   border-radius: 16px;
@@ -1300,6 +1296,7 @@ html {
   border: 2px solid #e3f2fd;
   position: relative;
   transition: transform 0.3s, box-shadow 0.3s;
+  height: 100%;
 }
 
 .process-card:hover {
@@ -1441,4 +1438,59 @@ html {
   font-size: 12px;
   color: var(--blue-primary);
   margin-top: 2px;
+}
+
+/* ============================================================
+   SCROLL REVEAL ANIMATION
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Process cards — dùng animation thay vì reveal để không bị ẩn */
+.process-card {
+  animation: fadeInUp 0.5s ease both;
+}
+
+.process-grid .process-card:nth-child(1) { animation-delay: 0.1s; }
+.process-grid .process-card:nth-child(3) { animation-delay: 0.25s; }
+.process-grid .process-card:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Feature cards clickable */
+.feature-card {
+  cursor: pointer;
+}
+
+/* Showcase cards */
+.showcase-card {
+  cursor: pointer;
+}
+
+/* Process card click hint */
+.process-card::after {
+  content: '→ Xem ngay';
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 11px;
+  color: var(--blue-primary);
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-weight: 600;
+}
+
+.process-card:hover::after {
+  opacity: 1;
 }
