@@ -77,6 +77,108 @@
       </div>
     </section>
 
+    <!-- SỐ LIỆU NỔI BẬT -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-icon-big">📦</div>
+            <div class="stat-big-num" data-count="500">0</div>
+            <div class="stat-big-label">Khách hàng tin dùng</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon-big">🏭</div>
+            <div class="stat-big-num" data-count="50">0</div>
+            <div class="stat-big-label">Loại sản phẩm</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon-big">🚚</div>
+            <div class="stat-big-num" data-count="10000">0</div>
+            <div class="stat-big-label">Đơn hàng đã giao</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon-big">⭐</div>
+            <div class="stat-big-num" data-count="10">0</div>
+            <div class="stat-big-label">Năm kinh nghiệm</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUY TRÌNH ĐẶT HÀNG -->
+    <section class="process-section">
+      <div class="container">
+        <div class="section-tag center">Quy Trình</div>
+        <h3 class="section-title">Đặt Hàng Chỉ 3 Bước</h3>
+        <p class="section-subtitle">Đơn giản, nhanh chóng và minh bạch</p>
+        <div class="process-grid">
+          <div class="process-card">
+            <div class="process-num">01</div>
+            <div class="process-icon">🔍</div>
+            <h4>Tìm & Chọn Sản Phẩm</h4>
+            <p>Duyệt danh mục sản phẩm, tìm kiếm theo tên hoặc loại hàng, thêm vào giỏ hàng</p>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-card">
+            <div class="process-num">02</div>
+            <div class="process-icon">📋</div>
+            <h4>Xác Nhận Đơn Hàng</h4>
+            <p>Kiểm tra giỏ hàng, điền thông tin giao hàng và chọn phương thức thanh toán</p>
+          </div>
+          <div class="process-arrow">→</div>
+          <div class="process-card">
+            <div class="process-num">03</div>
+            <div class="process-icon">🚚</div>
+            <h4>Nhận Hàng & Thanh Toán</h4>
+            <p>Chúng tôi xử lý và giao hàng đúng hẹn, thanh toán linh hoạt tiền mặt hoặc chuyển khoản</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ĐÁNH GIÁ KHÁCH HÀNG -->
+    <section class="testimonial-section">
+      <div class="container">
+        <div class="section-tag center">Khách Hàng Nói Gì</div>
+        <h3 class="section-title">Được Tin Dùng Bởi Hàng Trăm Doanh Nghiệp</h3>
+        <div class="testimonial-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p>"Chất lượng giấy rất tốt, giao hàng đúng hẹn. Đã hợp tác được 3 năm và rất hài lòng với dịch vụ."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">N</div>
+              <div>
+                <div class="testimonial-name">Nguyễn Văn An</div>
+                <div class="testimonial-company">Công Ty In Ấn Hà Nội</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p>"Hệ thống đặt hàng online rất tiện lợi, theo dõi đơn hàng dễ dàng. Giá cả cạnh tranh, chất lượng ổn định."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">T</div>
+              <div>
+                <div class="testimonial-name">Trần Thị Bình</div>
+                <div class="testimonial-company">Xưởng In Sài Gòn</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p>"Vải vụn chất lượng cao, đóng gói cẩn thận. Nhân viên tư vấn nhiệt tình, hỗ trợ nhanh chóng."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">P</div>
+              <div>
+                <div class="testimonial-name">Phạm Thị Dung</div>
+                <div class="testimonial-company">Công Ty Bao Bì HP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- TÌM KIẾM SẢN PHẨM -->
     <section class="search-section" id="tim-kiem">
       <div class="container">
@@ -353,6 +455,59 @@
         }
       });
 
+      document.getElementById('noResult').style.display = visible === 0 ? 'flex' : 'none';
+    }
+  </script>
+
+  <script>
+    // Đếm số animate khi scroll vào
+    function animateCount(el) {
+      const target = parseInt(el.dataset.count);
+      const suffix = target >= 1000 ? '+' : '+';
+      let current = 0;
+      const step = Math.ceil(target / 60);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString('vi-VN') + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 20);
+    }
+
+    // Sticky header
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('header-sticky', window.scrollY > 60);
+    });
+
+    // Intersection Observer cho counter
+    const counters = document.querySelectorAll('[data-count]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { animateCount(e.target); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => observer.observe(c));
+
+    // Filter sản phẩm
+    let currentCategory = 'all';
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      filterProducts();
+    }
+    function filterProducts() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.showcase-card');
+      let visible = 0;
+      cards.forEach(card => {
+        const name = card.dataset.name || '';
+        const cat  = card.dataset.category || '';
+        const matchCat  = currentCategory === 'all' || cat === currentCategory;
+        const matchText = !keyword || name.includes(keyword);
+        card.style.display = (matchCat && matchText) ? '' : 'none';
+        if (matchCat && matchText) visible++;
+      });
       document.getElementById('noResult').style.display = visible === 0 ? 'flex' : 'none';
     }
   </script>

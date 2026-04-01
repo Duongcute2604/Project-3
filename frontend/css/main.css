@@ -1258,3 +1258,187 @@ html {
 }
 
 .no-result span { font-size: 48px; }
+
+/* ============================================================
+   STICKY HEADER
+   ============================================================ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.header-sticky {
+  box-shadow: 0 4px 20px rgba(13,71,161,0.4);
+  background: var(--blue-dark) !important;
+}
+
+/* ============================================================
+   QUY TRÌNH ĐẶT HÀNG
+   ============================================================ */
+.process-section {
+  padding: 80px 20px;
+  background: white;
+}
+
+.process-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.process-card {
+  flex: 1;
+  min-width: 220px;
+  max-width: 280px;
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: 16px;
+  background: #f8faff;
+  border: 2px solid #e3f2fd;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.process-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(21,101,192,0.15);
+  border-color: var(--blue-primary);
+}
+
+.process-num {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--blue-primary);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.process-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.process-card h4 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin-bottom: 10px;
+}
+
+.process-card p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.7;
+}
+
+.process-arrow {
+  font-size: 28px;
+  color: var(--blue-light);
+  padding: 0 12px;
+  font-weight: 300;
+}
+
+@media (max-width: 768px) {
+  .process-arrow { display: none; }
+  .process-grid { gap: 24px; }
+}
+
+/* ============================================================
+   TESTIMONIAL
+   ============================================================ */
+.testimonial-section {
+  padding: 80px 20px;
+  background: #f8faff;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 16px rgba(21,101,192,0.08);
+  border: 1px solid #e3f2fd;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.testimonial-card::before {
+  content: '"';
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  font-size: 64px;
+  color: #e3f2fd;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(21,101,192,0.15);
+}
+
+.testimonial-stars {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+
+.testimonial-card > p {
+  color: #444;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #f0f4ff;
+  padding-top: 16px;
+}
+
+.testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-light));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.testimonial-name {
+  font-weight: 700;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.testimonial-company {
+  font-size: 12px;
+  color: var(--blue-primary);
+  margin-top: 2px;
+}

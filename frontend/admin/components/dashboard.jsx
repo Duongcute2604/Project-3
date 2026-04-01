@@ -22,38 +22,22 @@ function Dashboard({ setPage }) {
         });
       })
       .catch(() => setStats({
-        today_revenue: 12500000,
-        pending_orders: 5,
-        low_stock_count: 3,
-        month_revenue: 185000000,
-        recent_orders: [
-          { id: 1, code: 'DH001', customer: 'Nguyễn Văn A', total: 2500000, status: 'pending',   created_at: new Date() },
-          { id: 2, code: 'DH002', customer: 'Trần Thị B',   total: 4800000, status: 'approved',  created_at: new Date() },
-          { id: 3, code: 'DH003', customer: 'Lê Văn C',     total: 1200000, status: 'shipping',  created_at: new Date() },
-          { id: 4, code: 'DH004', customer: 'Phạm Thị D',   total: 3600000, status: 'completed', created_at: new Date() },
-          { id: 5, code: 'DH005', customer: 'Hoàng Văn E',  total: 900000,  status: 'cancelled', created_at: new Date() },
-        ],
-        low_stock_products: [
-          { name: 'Giấy In A4 80gsm', quantity: 20, min_stock: 50, unit: 'ream' },
-          { name: 'Lõi Ống 3 Inch',   quantity: 45, min_stock: 100, unit: 'cuộn' },
-          { name: 'Vải Vụn Cotton',    quantity: 80, min_stock: 200, unit: 'kg' },
-        ],
-        revenue_7days: [
-          { date: '18/06', revenue: 8200000 },
-          { date: '19/06', revenue: 15400000 },
-          { date: '20/06', revenue: 9800000 },
-          { date: '21/06', revenue: 22100000 },
-          { date: '22/06', revenue: 18500000 },
-          { date: '23/06', revenue: 11200000 },
-          { date: '24/06', revenue: 12500000 },
-        ],
+        today_revenue: 0,
+        pending_orders: 0,
+        low_stock_count: 0,
+        month_revenue: 0,
+        recent_orders: [],
+        low_stock_products: [],
+        revenue_7days: [],
       }))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="loading">⏳ Đang tải dữ liệu...</div>;
 
-  const maxRevenue = Math.max(...stats.revenue_7days.map(d => d.revenue));
+  const maxRevenue = stats.revenue_7days?.length > 0
+    ? Math.max(...stats.revenue_7days.map(d => d.revenue))
+    : 1;
 
   return (
     <div>
@@ -145,9 +129,9 @@ function Dashboard({ setPage }) {
               {stats.recent_orders.map(o => (
                 <tr key={o.id}>
                   <td style={{ color: '#f44336', fontWeight: 600 }}>{o.code}</td>
-                  <td>{o.customer}</td>
-                  <td style={{ fontWeight: 600 }}>{utils.formatMoney(o.total)}</td>
-                  <td><span className={`badge ${STATUS_MAP[o.status]?.cls}`}>{STATUS_MAP[o.status]?.label}</span></td>
+                  <td>{o.customer_name || o.customer}</td>
+                  <td style={{ fontWeight: 600 }}>{utils.formatMoney(o.total_amount || o.total)}</td>
+                  <td><span className={`badge ${STATUS_MAP[o.order_status || o.status]?.cls}`}>{STATUS_MAP[o.order_status || o.status]?.label}</span></td>
                   <td style={{ color: '#9e9e9e' }}>{utils.formatDate(o.created_at)}</td>
                 </tr>
               ))}
