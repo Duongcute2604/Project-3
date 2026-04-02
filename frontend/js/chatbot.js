@@ -5,7 +5,7 @@
 // ============================================================
 
 (function () {
-  const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // ← THAY KEY CỦA BẠN
+  const GEMINI_API_KEY = 'AIzaSyDmqAVDJ-qPUL46QSxNXPceeQjLQINjsCk';
 
   const SYSTEM_PROMPT = `Bạn là trợ lý tư vấn bán hàng của CÔNG TY BK (CÔNG TY TNHH ĐẦU TƯ XÂY DỰNG VÀ VẬN TẢI BK).
 
@@ -43,20 +43,27 @@ HƯỚNG DẪN TRẢ LỜI:
 
   // ---- Gọi Gemini API ----
   async function askGemini(userMessage) {
-    history.push({ role: 'user', parts: [{ text: userMessage }] });
+    // Thêm system prompt vào tin nhắn đầu tiên nếu chưa có
+    if (history.length === 0) {
+      history.push({
+        role: 'user',
+        parts: [{ text: SYSTEM_PROMPT + '\n\nNgười dùng: ' + userMessage }]
+      });
+    } else {
+      history.push({ role: 'user', parts: [{ text: userMessage }] });
+    }
 
-    const body = {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: history,
-      generationConfig: { maxOutputTokens: 512, temperature: 0.7 }
-    };
+    const body = { contents: history };
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
     );
 
-    if (!res.ok) throw new Error('API lỗi ' + res.status);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API lỗi ' + res.status);
+    }
     const data = await res.json();
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Xin lỗi, tôi không hiểu câu hỏi này.';
     history.push({ role: 'model', parts: [{ text: reply }] });
@@ -277,11 +284,6 @@ HƯỚNG DẪN TRẢ LỜI:
   }
 
   async function sendMessage() {
-    if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
-      addMessage('bot', '⚠️ Chưa cấu hình API key. Vui lòng mở file `js/chatbot.js` và thay `YOUR_GEMINI_API_KEY`.');
-      return;
-    }
-
     const input = document.getElementById('bk-chat-input');
     const sendBtn = document.getElementById('bk-chat-send');
     const text = input.value.trim();
@@ -294,19 +296,48 @@ HƯỚNG DẪN TRẢ LỜI:
     input.value = '';
     sendBtn.disabled = true;
     addMessage('user', text);
-    showTyping();
 
+    // Nếu chưa có API key → dùng câu trả lời cố định
+    if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+      showTyping();
+      await new Promise(r => setTimeout(r, 600));
+      hideTyping();
+      const fallback = getFallbackReply(text);
+      addMessage('bot', fallback);
+      sendBtn.disabled = false;
+      input.focus();
+      return;
+    }
+
+    showTyping();
     try {
       const reply = await askGemini(text);
       hideTyping();
       addMessage('bot', reply);
     } catch (e) {
       hideTyping();
-      addMessage('bot', '❌ Xin lỗi, có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ hotline **0901 234 567**.');
+      console.error('Gemini error:', e);
+      addMessage('bot', '❌ Lỗi: ' + e.message + '\n\nVui lòng liên hệ hotline **0901 234 567**.');
     } finally {
       sendBtn.disabled = false;
       input.focus();
     }
+  }
+
+  // Câu trả lời dự phòng khi chưa có API key
+  function getFallbackReply(text) {
+    const t = text.toLowerCase();
+    if (t.includes('giá') || t.includes('báo giá') || t.includes('price'))
+      return '💰 Để nhận báo giá tốt nhất, vui lòng liên hệ:\n📞 Hotline: **0901 234 567**\n📱 Zalo: **0912 345 678**\nChúng tôi sẽ phản hồi trong vòng 30 phút!';
+    if (t.includes('sản phẩm') || t.includes('hàng') || t.includes('giấy') || t.includes('lõi') || t.includes('vải'))
+      return '📦 Sản phẩm của chúng tôi:\n• Giấy In Khổ Lớn A0, Giấy Cuộn Offset\n• Giấy Bìa Cứng 300gsm\n• Lõi Ống Giấy 3 & 6 inch\n• Vải Vụn Cotton & Tổng Hợp\n\nXem chi tiết tại trang **Sản Phẩm** hoặc gọi **0901 234 567**';
+    if (t.includes('giao hàng') || t.includes('ship') || t.includes('vận chuyển'))
+      return '🚚 Thời gian giao hàng:\n• TP. HCM: **giao trong ngày**\n• Bình Dương, Đồng Nai: **1–2 ngày**\n• Các tỉnh miền Nam: **2–3 ngày**\n• Toàn quốc: **3–5 ngày**';
+    if (t.includes('liên hệ') || t.includes('hotline') || t.includes('điện thoại') || t.includes('địa chỉ'))
+      return '📞 Thông tin liên hệ:\n• Hotline: **0901 234 567**\n• Zalo: **0912 345 678**\n• Email: contact@congtyBK.vn\n• Địa chỉ: 123 Đường Công Nghiệp, Q12, TP. HCM\n• Giờ làm việc: Thứ 2–7: **7:30–17:30**';
+    if (t.includes('đặt hàng') || t.includes('mua') || t.includes('order'))
+      return '🛒 Để đặt hàng, bạn có thể:\n1. Đăng ký tài khoản và đặt hàng online\n2. Gọi hotline **0901 234 567**\n3. Nhắn Zalo **0912 345 678**\n\nChúng tôi hỗ trợ thanh toán tiền mặt và chuyển khoản!';
+    return '👋 Cảm ơn bạn đã liên hệ **CÔNG TY BK**!\n\nChúng tôi chuyên cung cấp giấy công nghiệp, lõi ống và vải vụn chất lượng cao.\n\n📞 Hotline: **0901 234 567**\nHoặc chọn câu hỏi bên dưới để được hỗ trợ nhanh hơn!';
   }
 
   // Khởi tạo khi DOM ready

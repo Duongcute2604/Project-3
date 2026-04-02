@@ -38,7 +38,7 @@
         <p>Cung cấp giấy khổ lớn, lõi ống, vải vụn chất lượng cao<br>cho doanh nghiệp in ấn, bao bì và sản xuất</p>
         <div class="cta-buttons">
           <a href="customer/index.html" class="btn btn-large btn-primary">🛒 Mua Hàng Ngay</a>
-          <a href="admin/index.html" class="btn btn-large btn-outline">⚙️ Trang Quản Trị</a>
+          <a href="san-pham.html" class="btn btn-large btn-outline">📦 Xem Sản Phẩm</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat"><span class="stat-num">500+</span><span class="stat-text">Khách hàng</span></div>
@@ -426,116 +426,6 @@
 
   </div>
 
-  <script src="js/chatbot.js"></script>
-</body>
-</html>
-
-    function setCategory(cat, btn) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      filterProducts();
-    }
-
-    function filterProducts() {
-      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.showcase-card');
-      let visible = 0;
-
-      cards.forEach(card => {
-        const name = card.dataset.name || '';
-        const cat  = card.dataset.category || '';
-        const matchCat  = currentCategory === 'all' || cat === currentCategory;
-        const matchText = !keyword || name.includes(keyword);
-
-        if (matchCat && matchText) {
-          card.style.display = '';
-          visible++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      document.getElementById('noResult').style.display = visible === 0 ? 'flex' : 'none';
-    }
-  </script>
-
-  <script>
-    // Đếm số animate khi scroll vào
-    function animateCount(el) {
-      const target = parseInt(el.dataset.count);
-      const suffix = target >= 1000 ? '+' : '+';
-      let current = 0;
-      const step = Math.ceil(target / 60);
-      const timer = setInterval(() => {
-        current = Math.min(current + step, target);
-        el.textContent = current.toLocaleString('vi-VN') + suffix;
-        if (current >= target) clearInterval(timer);
-      }, 20);
-    }
-
-    // Sticky header
-    const header = document.querySelector('.header');
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('header-sticky', window.scrollY > 60);
-    });
-
-    // Intersection Observer cho counter
-    const counters = document.querySelectorAll('[data-count]');
-    const counterObs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { animateCount(e.target); counterObs.unobserve(e.target); }
-      });
-    }, { threshold: 0.5 });
-    counters.forEach(c => counterObs.observe(c));
-
-    // Scroll reveal animation
-    const revealObs = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('revealed'), i * 80);
-          revealObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-
-    // Feature cards click
-    document.querySelectorAll('.feature-card').forEach((card, i) => {
-      const links = ['#san-pham', '#san-pham', 'customer/index.html', '#gioi-thieu'];
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', () => window.location.href = links[i] || '#');
-    });
-
-    // Showcase cards click
-    document.querySelectorAll('.showcase-card').forEach(card => {
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', () => window.location.href = 'san-pham.html');
-    });
-
-    // Filter sản phẩm
-    let currentCategory = 'all';
-    function setCategory(cat, btn) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      filterProducts();
-    }
-    function filterProducts() {
-      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.showcase-card');
-      let visible = 0;
-      cards.forEach(card => {
-        const name = card.dataset.name || '';
-        const cat  = card.dataset.category || '';
-        const matchCat  = currentCategory === 'all' || cat === currentCategory;
-        const matchText = !keyword || name.includes(keyword);
-        card.style.display = (matchCat && matchText) ? '' : 'none';
-        if (matchCat && matchText) visible++;
-      });
-      document.getElementById('noResult').style.display = visible === 0 ? 'flex' : 'none';
-    }
-  </script>
   <script src="js/chatbot.js"></script>
 </body>
 </html>
