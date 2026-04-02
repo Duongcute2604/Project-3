@@ -51,11 +51,22 @@ function LoginPage() {
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = user.role === 'admin' ? 'admin/index.html' : 'customer/index.html';
     } catch (err) {
-      // Fallback demo khi chưa có backend
+      // Fallback: kiểm tra tài khoản admin cứng khi backend chưa sẵn sàng
+      const HARDCODED = [
+        { email: 'admin@congty.com', password: '1', role: 'admin', full_name: 'Quản Trị Viên', id: 1 },
+      ];
+      const matched = HARDCODED.find(a => a.email === form.email && a.password === form.password);
+
+      // Fallback: tài khoản đã đăng ký qua trang register
       const demoUsers = JSON.parse(localStorage.getItem('demo_users') || '[]');
       const registeredUser = demoUsers.find(u => u.email === form.email && u.password === form.password);
-      if (registeredUser) {
-        localStorage.setItem('token', 'demo-token-' + Date.now());
+
+      if (matched) {
+        localStorage.setItem('token', 'local-token-' + Date.now());
+        localStorage.setItem('user', JSON.stringify({ id: matched.id, full_name: matched.full_name, email: matched.email, role: matched.role }));
+        window.location.href = matched.role === 'admin' ? 'admin/index.html' : 'customer/index.html';
+      } else if (registeredUser) {
+        localStorage.setItem('token', 'local-token-' + Date.now());
         localStorage.setItem('user', JSON.stringify(registeredUser));
         window.location.href = 'customer/index.html';
       } else {
