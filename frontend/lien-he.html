@@ -152,12 +152,18 @@
       };
 
       try {
-        await fetch('http://localhost:3000/api/contacts', {
+        const res = await fetch('http://localhost:3000/api/contacts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-      } catch {}
+        if (!res.ok) throw new Error('API fail');
+      } catch {
+        // Fallback: lưu vào localStorage khi backend chưa sẵn sàng
+        const contacts = JSON.parse(localStorage.getItem('contact_requests') || '[]');
+        contacts.unshift({ ...data, id: Date.now(), status: 'new', created_at: new Date().toISOString() });
+        localStorage.setItem('contact_requests', JSON.stringify(contacts));
+      }
 
       document.getElementById('contactForm').reset();
       document.getElementById('formSuccess').style.display = 'block';

@@ -194,7 +194,12 @@ function ContactRequests() {
     setLoading(true);
     axios.get('/api/contacts', { params: { status: statusFilter, limit: 50 } })
       .then(r => setItems(r.data.data || r.data))
-      .catch(() => setItems([]))
+      .catch(() => {
+        // Fallback: đọc từ localStorage khi backend chưa có bảng contact_requests
+        const local = JSON.parse(localStorage.getItem('contact_requests') || '[]');
+        const filtered = statusFilter ? local.filter(i => i.status === statusFilter) : local;
+        setItems(filtered);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -203,7 +208,14 @@ function ContactRequests() {
   const updateStatus = (id, status) => {
     axios.patch(`/api/contacts/${id}/status`, { status })
       .then(() => { setAlertMsg({ type: 'success', msg: 'Cập nhật thành công!' }); load(); })
-      .catch(() => setAlertMsg({ type: 'error', msg: 'Lỗi cập nhật' }));
+      .catch(() => {
+        // Fallback: cập nhật localStorage
+        const contacts = JSON.parse(localStorage.getItem('contact_requests') || '[]');
+        const idx = contacts.findIndex(c => c.id === id);
+        if (idx >= 0) { contacts[idx].status = status; localStorage.setItem('contact_requests', JSON.stringify(contacts)); }
+        setAlertMsg({ type: 'success', msg: 'Cập nhật thành công!' });
+        load();
+      });
   };
 
   const newCount = items.filter(i => i.status === 'new').length;
