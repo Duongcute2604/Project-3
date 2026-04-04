@@ -95,8 +95,32 @@ function ProductList({ onAddCart }) {
   const load = useCallback(() => {
     setLoading(true);
     axios.get('/api/products', { params: { search, category_id: catFilter, page, limit: LIMIT } })
-      .then(r => { setItems(r.data.data || r.data); setTotal(r.data.total || 0); })
-      .catch(() => { setItems([]); setTotal(0); })
+      .then(r => {
+        let data = r.data.data || r.data;
+        // Nếu DB trống, bổ sung từ sessionStorage
+        if (data.length === 0) {
+          try {
+            const local = JSON.parse(sessionStorage.getItem('products_local') || '[]');
+            data = local.filter(p => {
+              const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.code.toLowerCase().includes(search.toLowerCase());
+              return matchSearch && p.is_visible !== false;
+            });
+          } catch {}
+        }
+        setItems(data);
+        setTotal(r.data.total || data.length);
+      })
+      .catch(() => {
+        try {
+          const local = JSON.parse(sessionStorage.getItem('products_local') || '[]');
+          const filtered = local.filter(p => {
+            const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.code.toLowerCase().includes(search.toLowerCase());
+            return matchSearch && p.is_visible !== false;
+          });
+          setItems(filtered);
+          setTotal(filtered.length);
+        } catch { setItems([]); setTotal(0); }
+      })
       .finally(() => setLoading(false));
   }, [search, catFilter, page]);
 

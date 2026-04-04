@@ -13,7 +13,7 @@ router.get('/stock-summary', authMiddleware, async (req, res) => {
 
   try {
     const [products] = await db.query(
-      `SELECT p.id, p.code, p.name, p.unit, COALESCE(i.quantity,0) close_qty
+      `SELECT p.id, p.code, p.name, p.unit, p.price, COALESCE(i.quantity,0) close_qty
        FROM products p
        LEFT JOIN inventory i ON i.product_id = p.id
        ORDER BY p.code`
@@ -41,11 +41,15 @@ router.get('/stock-summary', authMiddleware, async (req, res) => {
       const out_qty   = Number(outMap[p.id]?.qty || 0);
       const out_val   = Number(outMap[p.id]?.val || 0);
       const open_qty  = close_qty - in_qty + out_qty;
+      const price     = Number(p.price) || 0;
+      // Tính giá trị theo giá sản phẩm nếu không có giá nhập/xuất
+      const open_val  = open_qty  * price;
+      const close_val = close_qty * price;
 
       if (open_qty === 0 && in_qty === 0 && out_qty === 0 && close_qty === 0) return null;
 
       return { code: p.code, name: p.name, unit: p.unit,
-               open_qty, open_val: 0, in_qty, in_val, out_qty, out_val, close_qty, close_val: 0 };
+               open_qty, open_val, in_qty, in_val, out_qty, out_val, close_qty, close_val };
     }).filter(Boolean);
 
     res.json({ data, month });

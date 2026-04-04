@@ -387,12 +387,30 @@ function StockSummary({ onViewDetail }) {
               sessionStorage.setItem('products_local', JSON.stringify([...existing, ...toSave]));
             } catch {}
 
-            // Gọi API tạo sản phẩm mới (nếu có backend)
+            // Gọi API tạo sản phẩm mới, đồng thời lưu vào sessionStorage làm fallback
+            const saveLocal = (products) => {
+              try {
+                const existing = JSON.parse(sessionStorage.getItem('products_local') || '[]');
+                const existCodes = new Set(existing.map(p => p.code.toLowerCase()));
+                const toAdd = products
+                  .filter(p => !existCodes.has(p.code.toLowerCase()))
+                  .map((p, i) => ({
+                    id: Date.now() + i,
+                    code: p.code, name: p.name, unit: p.unit,
+                    category: 'Nhập từ Excel', price: 0, is_visible: true,
+                    inventory: { quantity: p.close_qty || 0 }
+                  }));
+                sessionStorage.setItem('products_local', JSON.stringify([...existing, ...toAdd]));
+              } catch {}
+            };
+
             const createPromises = newProducts.map(p =>
-              axios.post('/api/products', { code: p.code, name: p.name, unit: p.unit, category: 'Nhập từ Excel' })
+              axios.post('/api/products', { code: p.code, name: p.name, unit: p.unit, category_id: null, price: 0 })
                 .catch(() => null)
             );
             Promise.all(createPromises).then(() => {
+              // Lưu vào sessionStorage để trang Sản Phẩm đọc được dù API có thành công hay không
+              saveLocal(newProducts);
               newProducts.forEach(p => dbCodesRef.current.add(p.code.toLowerCase().trim()));
               setItems(prev => {
                 const existingCodes = new Set(prev.map(r => r.code.toLowerCase().trim()));
