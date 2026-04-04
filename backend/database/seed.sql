@@ -137,18 +137,18 @@ ON DUPLICATE KEY UPDATE id = id;
 INSERT INTO order_items (order_id, product_id, product_name, unit, quantity, unit_price)
 SELECT o.id, p.id, p.name, p.unit, t.qty, t.price
 FROM (
-  SELECT 'DH00001' ocode, 'GIN-A4-80'  pcode,  50,  85000 UNION ALL
-  SELECT 'DH00002',       'GAN-BONG',          20, 145000 UNION ALL
-  SELECT 'DH00003',       'VAI-COTTON',        100,  15000 UNION ALL
-  SELECT 'DH00004',       'GIN-A3-80',          30, 160000 UNION ALL
-  SELECT 'DH00005',       'GIN-A4-80',          80,  85000 UNION ALL
-  SELECT 'DH00006',       'LOI-3IN',            50,   8000 UNION ALL
-  SELECT 'DH00007',       'GAN-MO',             25, 138000 UNION ALL
-  SELECT 'DH00008',       'GBI-300',           120,  35000 UNION ALL
-  SELECT 'DH00009',       'GIN-A4-80',          20,  85000 UNION ALL
-  SELECT 'DH00009',       'GAN-BONG',           10, 145000 UNION ALL
-  SELECT 'DH00010',       'VAI-POLY',          150,  12000
-) AS t(ocode, pcode, qty, price)
+  SELECT 'DH00001' AS ocode, 'GIN-A4-80'  AS pcode,  50 AS qty,  85000 AS price UNION ALL
+  SELECT 'DH00002',          'GAN-BONG',              20,         145000 UNION ALL
+  SELECT 'DH00003',          'VAI-COTTON',            100,         15000 UNION ALL
+  SELECT 'DH00004',          'GIN-A3-80',              30,        160000 UNION ALL
+  SELECT 'DH00005',          'GIN-A4-80',              80,         85000 UNION ALL
+  SELECT 'DH00006',          'LOI-3IN',                50,          8000 UNION ALL
+  SELECT 'DH00007',          'GAN-MO',                 25,        138000 UNION ALL
+  SELECT 'DH00008',          'GBI-300',               120,         35000 UNION ALL
+  SELECT 'DH00009',          'GIN-A4-80',              20,         85000 UNION ALL
+  SELECT 'DH00009',          'GAN-BONG',               10,        145000 UNION ALL
+  SELECT 'DH00010',          'VAI-POLY',              150,         12000
+) AS t
 JOIN orders o ON o.code = t.ocode
 JOIN products p ON p.code = t.pcode;
 
@@ -158,14 +158,14 @@ JOIN products p ON p.code = t.pcode;
 INSERT INTO payments (order_id, amount, method, payment_date, confirmed_by, note)
 SELECT o.id, t.amount, t.method, t.pdate, 1, NULL
 FROM (
-  SELECT 'DH00001', 4250000, 'transfer', '2026-01-13' UNION ALL
+  SELECT 'DH00001' AS ocode, 4250000 AS amount, 'transfer' AS method, '2026-01-13' AS pdate UNION ALL
   SELECT 'DH00002', 2900000, 'transfer', '2026-01-19' UNION ALL
   SELECT 'DH00003', 1500000, 'cash',     '2026-01-25' UNION ALL
   SELECT 'DH00004', 4800000, 'transfer', '2026-02-06' UNION ALL
   SELECT 'DH00005', 3000000, 'transfer', '2026-02-13' UNION ALL
   SELECT 'DH00006',  400000, 'cash',     '2026-02-18' UNION ALL
   SELECT 'DH00010', 1800000, 'cash',     '2026-03-20'
-) AS t(ocode, amount, method, pdate)
+) AS t
 JOIN orders o ON o.code = t.ocode;
 
 -- ============================================================
