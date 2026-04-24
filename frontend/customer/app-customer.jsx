@@ -351,6 +351,7 @@ function Cart({ cart, onUpdate, onRemove, onCheckout }) {
 function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
     if (!auth.isLoggedIn()) { setLoading(false); return; }
@@ -360,6 +361,15 @@ function OrderHistory() {
       .finally(() => setLoading(false));
   }, []);
 
+  const loadDetail = async (orderId) => {
+    if (expanded === orderId) { setExpanded(null); return; }
+    try {
+      const r = await axios.get(`/api/orders/${orderId}`);
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, items: r.data.items || [] } : o));
+    } catch {}
+    setExpanded(orderId);
+  };
+
   const STATUS = {
     pending:   { label: 'Chờ duyệt',  bg: '#fff3e0', color: '#e65100' },
     approved:  { label: 'Đã duyệt',   bg: '#e3f2fd', color: '#1565c0' },
@@ -368,23 +378,26 @@ function OrderHistory() {
     cancelled: { label: 'Đã hủy',     bg: '#ffebee', color: '#c62828' },
   };
 
+  const PAY = {
+    unpaid:  { label: 'Chưa thanh toán', color: '#c62828' },
+    partial: { label: 'TT một phần',     color: '#e65100' },
+    paid:    { label: 'Đã thanh toán',   color: '#2e7d32' },
+  };
+
   if (!auth.isLoggedIn()) return (
     <div style={{ background: '#f5f7fa', minHeight: 'calc(100vh - 64px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', background: '#fff', padding: '48px', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔐</div>
         <h3 style={{ color: '#333', marginBottom: '8px' }}>Vui lòng đăng nhập</h3>
         <p style={{ color: '#9e9e9e', marginBottom: '20px' }}>Đăng nhập để xem lịch sử đơn hàng</p>
-        <a href="../login.html?redirect=1" style={{
-          background: '#1565c0', color: '#fff', padding: '10px 24px',
-          borderRadius: '8px', textDecoration: 'none', fontWeight: 600
-        }}>Đăng Nhập</a>
+        <a href="../login.html?redirect=1" style={{ background: '#1565c0', color: '#fff', padding: '10px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>Đăng Nhập</a>
       </div>
     </div>
   );
 
   return (
     <div style={{ background: '#f5f7fa', minHeight: 'calc(100vh - 64px)', padding: '32px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '860px', margin: '0 auto' }}>
         <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#1a1a1a', marginBottom: '24px' }}>📋 Lịch Sử Đơn Hàng</h2>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '48px', color: '#9e9e9e' }}>⏳ Đang tải...</div>
@@ -397,23 +410,70 @@ function OrderHistory() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {orders.map(o => {
               const s = STATUS[o.order_status] || { label: o.order_status, bg: '#f5f5f5', color: '#666' };
+              const ps = PAY[o.payment_status] || { label: o.payment_status, color: '#666' };
+              const isOpen = expanded === o.id;
               return (
-                <div key={o.id} style={{
-                  background: '#fff', borderRadius: '12px', padding: '16px 20px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                }}>
-                  <div>
-                    <span style={{ color: '#1565c0', fontWeight: 800, fontSize: '15px' }}>{o.code}</span>
-                    <span style={{ color: '#9e9e9e', fontSize: '12px', marginLeft: '12px' }}>{utils.formatDate(o.created_at)}</span>
+                <div key={o.id} style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                  {/* Header — click để mở chi tiết */}
+                  <div onClick={() => loadDetail(o.id)} style={{
+                    padding: '16px 20px', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    background: isOpen ? '#f0f4ff' : '#fff',
+                    borderBottom: isOpen ? '1px solid #e3f2fd' : 'none'
+                  }}>
+                    <div>
+                      <span style={{ color: '#1565c0', fontWeight: 800, fontSize: '15px' }}>{o.code}</span>
+                      <span style={{ color: '#9e9e9e', fontSize: '12px', marginLeft: '12px' }}>{utils.formatDate(o.created_at)}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 700, color: '#1a1a1a' }}>{utils.formatMoney(o.total_amount)}</span>
+                      <span style={{ background: s.bg, color: s.color, padding: '3px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 600 }}>{s.label}</span>
+                      <span style={{ color: ps.color, fontSize: '12px', fontWeight: 500 }}>{ps.label}</span>
+                      <span style={{ color: '#9e9e9e' }}>{isOpen ? '▲' : '▼'}</span>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 700, color: '#1a1a1a' }}>{utils.formatMoney(o.total_amount)}</span>
-                    <span style={{
-                      background: s.bg, color: s.color,
-                      padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600
-                    }}>{s.label}</span>
-                  </div>
+
+                  {/* Chi tiết sản phẩm */}
+                  {isOpen && (
+                    <div style={{ padding: '16px 20px' }}>
+                      {o.items && o.items.length > 0 ? (
+                        <>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#555', marginBottom: '10px' }}>📦 Sản phẩm đã đặt:</div>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                            <thead>
+                              <tr style={{ background: '#f5f7fa' }}>
+                                <th style={{ padding: '8px 12px', textAlign: 'left', color: '#666', fontWeight: 600 }}>Sản phẩm</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'center', color: '#666', fontWeight: 600 }}>ĐVT</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'right', color: '#666', fontWeight: 600 }}>SL</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'right', color: '#666', fontWeight: 600 }}>Đơn giá</th>
+                                <th style={{ padding: '8px 12px', textAlign: 'right', color: '#666', fontWeight: 600 }}>Thành tiền</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {o.items.map((item, i) => (
+                                <tr key={i} style={{ borderTop: '1px solid #f0f0f0' }}>
+                                  <td style={{ padding: '10px 12px', fontWeight: 600 }}>{item.product_name}</td>
+                                  <td style={{ padding: '10px 12px', textAlign: 'center', color: '#666' }}>{item.unit}</td>
+                                  <td style={{ padding: '10px 12px', textAlign: 'right' }}>{item.quantity}</td>
+                                  <td style={{ padding: '10px 12px', textAlign: 'right' }}>{utils.formatMoney(item.unit_price)}</td>
+                                  <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#1565c0' }}>{utils.formatMoney(item.total_price || item.quantity * item.unit_price)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                            <tfoot>
+                              <tr style={{ borderTop: '2px solid #e0e0e0', background: '#f8faff' }}>
+                                <td colSpan="4" style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: '#555' }}>Tổng cộng:</td>
+                                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#1565c0', fontSize: '15px' }}>{utils.formatMoney(o.total_amount)}</td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                          {o.note && <div style={{ marginTop: '10px', padding: '10px 14px', background: '#fff8e1', borderRadius: '8px', fontSize: '13px', color: '#666' }}>📝 {o.note}</div>}
+                        </>
+                      ) : (
+                        <div style={{ color: '#9e9e9e', fontSize: '13px', textAlign: 'center', padding: '16px' }}>Không có thông tin sản phẩm</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
